@@ -43,6 +43,7 @@ CAR WEB/
 ├── Img/                  # contains list of car images 
 ├── Img2/                 # contains list of more car images
 ```
+---
 
 ## 💻 Installation and Setup
 
