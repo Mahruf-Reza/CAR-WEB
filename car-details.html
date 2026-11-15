@@ -1,0 +1,3169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Car Details</title>
+
+<style>
+
+/* BASE */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Lato", sans-serif;
+    background: #0b1220;
+    color: #e5e7eb;
+}
+
+/* LAYOUT */
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 18px;
+}
+
+.main-card {
+    background: #111827;
+    border-radius: 14px;
+    padding: 18px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.main-flex {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+/* LEFT */
+.hero {
+    width: 68%;
+}
+
+/* SLIDER */
+.slider {
+    width: 100%;
+    height: 300px;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    background: radial-gradient(circle at center, #1f2937 0%, #0b1220 100%);
+}
+
+#car-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    display: block;
+    transition: opacity .35s ease;
+}
+
+/* ARROWS */
+.arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+    background: rgba(17, 24, 39, 0.7);
+    color: #fff;
+    backdrop-filter: blur(6px);
+    transition: .2s ease;
+    user-select: none;
+}
+
+.arrow:hover {
+    background: rgba(255,255,255,0.15);
+}
+
+.arrow.left { left: 10px; }
+.arrow.right { right: 10px; }
+
+/* THUMBNAILS */
+#thumbnails {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+#thumbnails::-webkit-scrollbar {
+    display: none;
+}
+
+#thumbnails img {
+    width: 90px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    cursor: pointer;
+    opacity: .65;
+    border: 2px solid transparent;
+    transition: .2s ease;
+    flex-shrink: 0;
+}
+
+#thumbnails img:hover {
+    transform: scale(1.05);
+    opacity: 1;
+}
+
+#thumbnails img.active {
+    border-color: #ef4444;
+    opacity: 1;
+}
+
+/* RIGHT PANEL */
+.side-info {
+    width: 32%;
+    padding: 6px 0;
+}
+
+.side-info h1 {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.price {
+    font-size: 22px;
+    font-weight: 700;
+    color: #ef4444;
+    margin-bottom: 10px;
+}
+
+/* INFO BLOCKS */
+#engine,
+#mileage,
+#type {
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 6px;
+    color: #e5e7eb;
+}
+
+#rating {
+    margin-top: 8px;
+    color: #fbbf24;
+    font-size: 15px;
+}
+
+/* HIGHLIGHTS */
+.highlights {
+    display: flex;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.card {
+    flex: 1;
+    background: #111827;
+    border: 1px solid rgba(255,255,255,0.05);
+    padding: 12px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 13px;
+    color: #d1d5db;
+}
+
+/* TABS */
+.tabs {
+    display: flex;
+    gap: 22px;
+    margin-top: 26px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.tab {
+    padding: 12px 0;
+    cursor: pointer;
+    color: #9ca3af;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.tab.active {
+    color: #ef4444;
+    border-bottom: 2px solid #ef4444;
+    font-weight: 700;
+}
+
+/* CONTENT */
+.tab-content {
+    display: none;
+    margin-top: 18px;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* TABLE */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+td {
+    padding: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    color: #d1d5db;
+}
+
+/* LISTS */
+ul {
+    margin-top: 10px;
+    padding-left: 18px;
+    color: #d1d5db;
+}
+
+/* SPEC TABLE ENHANCEMENT (FIXED CONSISTENCY) */
+#spec-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#spec-table td {
+    padding: 14px 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+#spec-table tr:last-child td {
+    border-bottom: none;
+}
+
+#spec-table tr:hover td {
+    background: rgba(255,255,255,0.03);
+}
+
+/* OVERVIEW */
+#overview-text {
+    line-height: 1.8;
+    font-size: 15px;
+    color: #e5e7eb;
+    background: rgba(255,255,255,0.03);
+    padding: 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.06);
+    white-space: pre-line;
+}
+
+.emi-box {
+    margin-top: 20px;
+    padding: 20px;
+    width: 100%;
+    max-width: 350px;
+
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 15px;
+
+    color: white;
+}
+
+.emi-box h3 {
+    margin-bottom: 15px;
+    font-size: 20px;
+}
+
+.emi-box label {
+    font-size: 14px;
+    display: block;
+    margin-top: 10px;
+}
+
+.emi-box input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+
+    border-radius: 8px;
+    border: none;
+    outline: none;
+}
+
+.emi-box button {
+    margin-top: 15px;
+    width: 100%;
+    padding: 10px;
+
+    background: #ff3c00;
+    color: white;
+    border: none;
+    border-radius: 8px;
+
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.emi-box button:hover {
+    background: #ff9f00;
+}
+
+.emi-result {
+    margin-top: 15px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.bottom-links {
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    padding-bottom: 30px;
+}
+
+.glass-link {
+    padding: 12px 20px;
+
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+
+    color: #e5e7eb;
+    text-decoration: none;
+    font-size: 14px;
+
+    transition: 0.25s ease;
+}
+
+.glass-link:hover {
+    background: rgb(30, 161, 161);
+    transform: translateY(-3px);
+    color: white;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .main-flex {
+        flex-direction: column;
+    }
+
+    .hero,
+    .side-info {
+        width: 100%;
+    }
+
+    .slider {
+        height: 220px;
+    }
+
+    #thumbnails img {
+        width: 75px;
+        height: 50px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="main-card">
+
+        <div class="main-flex">
+
+            <!-- LEFT: IMAGE SECTION -->
+            <div class="hero">
+                <div class="slider">
+                    <img id="car-img" alt="Car image">
+                    <div class="arrow left" onclick="prevImage()">❮</div>
+                    <div class="arrow right" onclick="nextImage()">❯</div>
+                </div>
+                <div id="thumbnails"></div>
+            </div>
+
+            <!-- RIGHT: CAR INFO -->
+            <div class="side-info">
+                <h1 id="car-name"></h1>
+                <div class="price" id="price"></div>
+                <div id="rating"></div>
+
+                <!-- EMI CALCULATOR BOX -->
+                <div class="emi-box">
+                    <h3>EMI Calculator</h3>
+
+                    <label>Loan Amount (₹)</label>
+                    <input type="number" id="loanAmount" placeholder="Enter loan amount">
+
+                    <label>Interest Rate (% per year)</label>
+                    <input type="number" id="interestRate" placeholder="e.g. 9">
+
+                    <label>Tenure (years)</label>
+                    <input type="number" id="tenure" placeholder="e.g. 5">
+
+                    <button onclick="calculateEMI()">Calculate EMI</button>
+
+                    <button onclick="resetEMI()" style="background:#2963c2;margin-top:8px;">
+                        Reset
+                    </button>
+
+                    <div class="emi-result">
+                        Monthly EMI: <span id="emiOutput">₹0</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- HIGHLIGHTS -->
+    <div class="highlights">
+        <div class="card" id="engine"></div>
+        <div class="card" id="mileage"></div>
+        <div class="card" id="type"></div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+        <div class="tab active" data-tab="overview">Overview</div>
+        <div class="tab" data-tab="specs">Specs</div>
+        <div class="tab" data-tab="variants">Variants</div>
+        <div class="tab" data-tab="proscons">Pros & Cons</div>
+    </div>
+
+    <!-- OVERVIEW -->
+    <div id="overview" class="tab-content active">
+        <p id="overview-text"></p>
+    </div>
+
+    <!-- SPECS -->
+    <div id="specs" class="tab-content">
+        <table>
+            <tbody id="spec-table"></tbody>
+        </table>
+    </div>
+
+    <!-- VARIANTS -->
+    <div id="variants" class="tab-content">
+
+        <h3 style="margin-bottom:8px;">Variants</h3>
+
+        <ul id="variant-list"></ul>
+
+        <div style="height:20px;"></div>
+
+        <p style="font-size:13px; color:#9ca3af;">
+            Prices may vary based on city, offers, and dealership availability.
+        </p>
+
+    </div>
+
+    <!-- PROS & CONS -->
+    <div id="proscons" class="tab-content">
+
+        <h3 style="margin-bottom:8px;">Pros</h3>
+        <ul id="pros"></ul>
+
+        <!-- DIVIDER LINE -->
+        <div style="height:1px; background: rgba(255,255,255,0.08); margin:18px 0;"></div>
+
+        <h3 style="margin-bottom:8px;">Cons</h3>
+        <ul id="cons"></ul>
+
+    </div>
+
+</div>
+
+<script>
+
+function showTab(tabId) {
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+
+    document.querySelectorAll(".tab").forEach(t => {
+        if (t.dataset.tab === tabId) t.classList.add("active");
+    });
+
+    const tab = document.getElementById(tabId);
+    if (tab) tab.classList.add("active");
+}
+
+const params = new URLSearchParams(window.location.search);
+const carParam = params.get("car");
+
+const cars = {
+    
+swift:{
+    name:"Maruti Suzuki Swift",
+    price:"₹6 – ₹9.5 Lakh (ex-showroom)",
+    engine:"1.2L Z-Series Petrol",
+    mileage:"22.38 – 25.75 km/l",
+    type:"Hatchback",
+
+    overview:`The Maruti Suzuki Swift is one of India's most popular hatchbacks known for its sporty design, lightweight platform, and excellent fuel efficiency. The latest generation gets a new Z-Series 3-cylinder petrol engine which focuses on efficiency while maintaining city-friendly performance. 
+
+It offers a fun-to-drive nature with quick steering response, making it ideal for urban driving. The cabin is modern with a floating touchscreen, wireless connectivity, and improved safety features like 6 airbags as standard.
+
+Swift is best suited for buyers looking for a reliable, fuel-efficient, and low-maintenance hatchback with a sporty character.`,
+
+    images:[
+        "Img2/swift1.jpg",
+        "Img2/swift2.jpg",
+        "Img2/swift3.jpg",
+        "Img2/swift4.jpg"
+    ],
+
+    specs:{
+        "Engine Type":"1.2L Z-Series Petrol",
+        "Displacement":"1197 cc",
+        "No. of Cylinders":"3",
+        "Max Power":"82 PS @ 5700 rpm",
+        "Max Torque":"112 Nm @ 4300 rpm",
+        "Transmission":"5-speed Manual / AMT",
+        "Drive Type":"FWD",
+        "Fuel Type":"Petrol",
+        "Mileage (ARAI)":"25.75 km/l (AMT)",
+        "Top Speed":"~165 km/h",
+        "0-100 km/h":"~12 sec",
+        "Fuel Tank Capacity":"37 Litres",
+        "Length":"3860 mm",
+        "Width":"1735 mm",
+        "Height":"1520 mm",
+        "Wheelbase":"2450 mm",
+        "Ground Clearance":"163 mm",
+        "Boot Space":"265 Litres",
+        "Kerb Weight":"~900 kg",
+        "Suspension Front":"MacPherson Strut",
+        "Suspension Rear":"Torsion Beam",
+        "Brakes Front":"Disc",
+        "Brakes Rear":"Drum",
+        "Tyre Size":"185/65 R15"
+    },
+
+    variants:[
+        { name:"LXi", price:"₹6 Lakh", details:"Base variant, basic features, manual only" },
+        { name:"VXi", price:"₹7 Lakh", details:"Adds infotainment, steering controls" },
+        { name:"ZXi", price:"₹8 Lakh", details:"Alloy wheels, better interiors" },
+        { name:"ZXi+", price:"₹9.5 Lakh", details:"Top variant, touchscreen, camera, LED DRLs" }
+    ],
+
+    pros:[
+        "Excellent fuel efficiency (best in segment)",
+        "Lightweight and fun to drive",
+        "Low maintenance cost",
+        "Good resale value",
+        "Wide service network"
+    ],
+
+    cons:[
+        "Build quality is average",
+        "Rear seat space is limited",
+        "No diesel option",
+        "Engine performance is not very powerful",
+        "Highway stability could be better"
+    ]
+},
+
+nexon:{
+    name:"Tata Nexon",
+    price:"₹8 – ₹15 Lakh (ex-showroom)",
+    engine:"1.2L Turbo Petrol / 1.5L Diesel",
+    mileage:"17 – 24 km/l",
+    type:"SUV",
+
+    overview:`The Tata Nexon is one of India's safest compact SUVs with a strong 5-star safety rating and solid build quality. It is available with both petrol and diesel engine options, offering a balance between performance and efficiency.
+
+The turbo petrol engine provides punchy city performance, while the diesel engine is known for strong torque and highway efficiency. The Nexon also stands out with its modern features such as a large touchscreen, digital instrument cluster, ventilated seats, and a panoramic sunroof.
+
+It is ideal for buyers who prioritize safety, road presence, and a feature-loaded compact SUV experience.`,
+
+    images:[
+        "Img2/nexon1.jpg",
+        "Img2/nexon2.jpg",
+        "Img2/nexon3.jpg",
+        "Img2/nexon4.jpg"
+    ],
+
+    specs:{
+        "Engine Type":"1.2L Turbo Petrol / 1.5L Diesel",
+        "Displacement":"1199 cc / 1497 cc",
+        "No. of Cylinders":"3 (Petrol) / 4 (Diesel)",
+        "Max Power":"118 bhp (Petrol) / 113 bhp (Diesel)",
+        "Max Torque":"170 Nm (Petrol) / 260 Nm (Diesel)",
+        "Transmission":"6-speed Manual / AMT / DCT",
+        "Drive Type":"FWD",
+        "Fuel Type":"Petrol / Diesel / CNG",
+        "Mileage (ARAI)":"17 – 24 km/l",
+        "Top Speed":"~180 km/h",
+        "Fuel Tank Capacity":"44 Litres",
+        "Length":"3995 mm",
+        "Width":"1804 mm",
+        "Height":"1620 mm",
+        "Wheelbase":"2498 mm",
+        "Ground Clearance":"208 mm",
+        "Boot Space":"382 Litres",
+        "Suspension Front":"MacPherson Strut",
+        "Suspension Rear":"Twist Beam",
+        "Brakes Front":"Disc",
+        "Brakes Rear":"Drum",
+        "Safety Rating":"5-Star (Global NCAP)"
+    },
+
+    variants:[
+        { name:"Smart", price:"₹8 Lakh", details:"Base variant with essential features" },
+        { name:"Pure", price:"₹10 Lakh", details:"Adds touchscreen and connectivity" },
+        { name:"Creative", price:"₹12 Lakh", details:"More features, alloys, camera" },
+        { name:"Fearless", price:"₹15 Lakh", details:"Top variant with sunroof, ventilated seats" }
+    ],
+
+    pros:[
+        "Excellent 5-star safety rating",
+        "Strong diesel engine performance",
+        "High ground clearance (good for bad roads)",
+        "Feature-loaded cabin",
+        "Comfortable ride quality"
+    ],
+
+    cons:[
+        "Petrol engine feels less refined",
+        "AMT gearbox not very smooth",
+        "Rear seat space is average",
+        "Infotainment can lag sometimes"
+    ]
+},
+
+verna:{
+    name:"Hyundai Verna",
+    price:"₹11 – ₹18.5 Lakh (ex-showroom)",
+    engine:"1.5L NA Petrol / 1.5L Turbo Petrol",
+    mileage:"18 – 20.6 km/l",
+    type:"Sedan",
+
+    overview:`The Hyundai Verna is a premium sedan known for its powerful turbo engine, futuristic design, and segment-leading features. It offers both a refined naturally aspirated engine and a performance-focused turbo petrol engine.
+
+The turbo variant delivers strong acceleration and is among the fastest cars in its segment, while the cabin offers premium features like ADAS, ventilated seats, a Bose sound system, and a large infotainment setup.
+
+It is ideal for buyers looking for a feature-rich, powerful sedan with a balance of comfort and performance.`,
+
+    images:[
+        "Img2/verna1.jpg",
+        "Img2/verna2.jpg",
+        "Img2/verna3.jpg",
+        "Img2/verna4.jpg"
+    ],
+
+    specs:{
+        "Engine Type":"1.5L NA Petrol / 1.5L Turbo GDi",
+        "Displacement":"1497 cc / 1482 cc",
+        "No. of Cylinders":"4",
+        "Max Power":"115 PS (NA) / 160 PS (Turbo)",
+        "Max Torque":"144 Nm / 253 Nm",
+        "Transmission":"6MT / CVT / 7DCT",
+        "Drive Type":"FWD",
+        "Fuel Type":"Petrol",
+        "Mileage (ARAI)":"18 – 20.6 km/l",
+        "Top Speed":"~210 km/h",
+        "Fuel Tank Capacity":"45 Litres",
+        "Length":"4565 mm",
+        "Width":"1765 mm",
+        "Height":"1475 mm",
+        "Wheelbase":"2670 mm",
+        "Boot Space":"528 Litres",
+        "Suspension Front":"MacPherson Strut",
+        "Suspension Rear":"Coupled Torsion Beam",
+        "Brakes Front":"Disc",
+        "Brakes Rear":"Disc",
+        "ADAS":"Level 2"
+    },
+
+    variants:[
+        { name:"EX", price:"₹11 Lakh", details:"Base variant with essential features" },
+        { name:"S", price:"₹12.5 Lakh", details:"Adds touchscreen and comfort features" },
+        { name:"SX", price:"₹15 Lakh", details:"Premium features and styling" },
+        { name:"SX(O)", price:"₹18.5 Lakh", details:"Top variant with ADAS, Bose sound, ventilated seats" }
+    ],
+
+    pros:[
+        "Powerful turbo engine (best in segment)",
+        "Premium interiors and features",
+        "Large boot space",
+        "Advanced safety (ADAS)",
+        "Smooth automatic gearbox options"
+    ],
+
+    cons:[
+        "Low ground clearance",
+        "Not ideal for bad roads",
+        "Mileage drops in city (turbo)",
+        "Rear headroom slightly limited"
+    ]
+},
+
+baleno:{
+    name:"Maruti Suzuki Baleno",
+    price:"₹6.6 – ₹9.8 Lakh (ex-showroom)",
+    engine:"1.2L DualJet Petrol",
+    mileage:"22.35 – 22.94 km/l",
+    type:"Hatchback",
+
+    overview:`The Maruti Suzuki Baleno is a premium hatchback known for its spacious cabin, smooth petrol engine, and excellent fuel efficiency. It is designed for comfortable city driving with light controls and refined performance.
+
+The DualJet petrol engine offers a balance between performance and mileage, while the cabin provides features like a 9-inch touchscreen, head-up display, and 360-degree camera.
+
+Baleno is ideal for buyers looking for a practical, spacious, and feature-rich hatchback with low running costs.`,
+
+    images:[
+        "Img2/baleno1.jpg",
+        "Img2/baleno2.jpg",
+        "Img2/baleno3.jpg",
+        "Img2/baleno4.jpg"
+    ],
+
+    specs:{
+        "Engine Type":"1.2L DualJet Petrol",
+        "Displacement":"1197 cc",
+        "No. of Cylinders":"4",
+        "Max Power":"90 PS",
+        "Max Torque":"113 Nm",
+        "Transmission":"5MT / AMT",
+        "Fuel Type":"Petrol / CNG",
+        "Mileage (ARAI)":"22.94 km/l",
+        "Fuel Tank Capacity":"37 Litres",
+        "Length":"3990 mm",
+        "Width":"1745 mm",
+        "Height":"1500 mm",
+        "Wheelbase":"2520 mm",
+        "Boot Space":"318 Litres",
+        "Ground Clearance":"170 mm",
+        "Brakes":"Disc (Front) / Drum (Rear)"
+    },
+
+    variants:[
+        { name:"Sigma", price:"₹6.6 Lakh", details:"Base variant with basic features" },
+        { name:"Delta", price:"₹7.5 Lakh", details:"Adds infotainment and controls" },
+        { name:"Zeta", price:"₹8.5 Lakh", details:"Alloys, push start, better interiors" },
+        { name:"Alpha", price:"₹9.8 Lakh", details:"Top variant with HUD and 360 camera" }
+    ],
+
+    pros:[
+        "Very spacious cabin for a hatchback",
+        "Smooth and refined petrol engine",
+        "Excellent mileage",
+        "Low maintenance cost",
+        "Good feature list"
+    ],
+
+    cons:[
+        "Build quality is average",
+        "Not very powerful for highways",
+        "No diesel engine",
+        "Handling is not sporty"
+    ]
+},
+
+tiago:{
+    name:"Tata Tiago",
+    price:"₹5.5 – ₹8.5 Lakh (ex-showroom)",
+    engine:"1.2L Revotron Petrol",
+    mileage:"19 – 20 km/l",
+    type:"Hatchback",
+
+    overview:`The Tata Tiago is a budget-friendly hatchback known for its solid build quality and safety. It offers a comfortable ride and stable handling compared to rivals.
+
+The petrol engine is tuned for city driving, and the car also comes with a CNG option for better running costs. It includes features like a touchscreen infotainment system, Harman sound system, and good safety features.
+
+Tiago is best suited for buyers looking for a safe and affordable entry-level car.`,
+
+    images:[
+        "Img2/tiago1.jpg",
+        "Img2/tiago2.jpg",
+        "Img2/tiago3.jpg",
+        "Img2/tiago4.jpg"
+    ],
+
+    specs:{
+        "Engine Type":"1.2L Revotron Petrol",
+        "Displacement":"1199 cc",
+        "Max Power":"86 PS",
+        "Max Torque":"113 Nm",
+        "Transmission":"5MT / AMT",
+        "Fuel Type":"Petrol / CNG",
+        "Mileage":"20 km/l",
+        "Fuel Tank":"35 Litres",
+        "Length":"3765 mm",
+        "Boot Space":"242 Litres",
+        "Ground Clearance":"170 mm",
+        "Safety Rating":"4-Star (Global NCAP)"
+    },
+
+    variants:[
+        { name:"XE", price:"₹5.5 Lakh", details:"Base variant" },
+        { name:"XM", price:"₹6.5 Lakh", details:"Adds infotainment" },
+        { name:"XT", price:"₹7.5 Lakh", details:"More features" },
+        { name:"XZ+", price:"₹8.5 Lakh", details:"Top variant with alloys and camera" }
+    ],
+
+    pros:[
+        "Strong build quality",
+        "Good safety rating",
+        "Comfortable ride",
+        "Affordable pricing",
+        "Available in CNG"
+    ],
+
+    cons:[
+        "Engine is not very powerful",
+        "AMT gearbox feels slow",
+        "Boot space limited in CNG",
+        "Interior quality could be better"
+    ]
+},
+
+xuv300:{
+    name:"Mahindra XUV300",
+    price:"₹7.99 – ₹14.76 Lakh (ex-showroom)",
+    engine:"1.2L Turbo Petrol / 1.5L Diesel",
+    mileage:"17 – 21 km/l",
+    type:"Compact SUV",
+
+    overview:`The Mahindra XUV300 is a compact SUV built on the SsangYong Tivoli platform, known for its class-leading safety, strong torque delivery, and solid build quality. It was one of the first sub-4m SUVs in India to achieve a 5-star Global NCAP safety rating.
+
+It offers two engine options — a 1.2L turbo petrol for refined city and highway driving, and a 1.5L diesel that is known for strong low-end torque and excellent drivability under load.
+
+The cabin is well-insulated and feels solid, with premium features like dual-zone climate control, sunroof, touchscreen infotainment, steering modes (Comfort, Normal, Sport), and segment-leading safety features.
+
+It is ideal for buyers who prioritize safety, driving performance, and build quality in a compact SUV package.`,
+
+    images:[
+        "Img2/xuv3001.jpg",
+        "Img2/xuv3002.jpg",
+        "Img2/xuv3003.jpg",
+        "Img2/xuv3004.jpg"
+    ],
+
+    specs:{
+        "Engine Type":"1.2L Turbo Petrol / 1.5L Diesel",
+        "Displacement":"1197 cc / 1497 cc",
+        "No. of Cylinders":"3 / 4",
+        "Max Power":"110 PS (Petrol) / 117 PS (Diesel)",
+        "Max Torque":"200 Nm / 300 Nm",
+        "Transmission":"6MT / AMT",
+        "Drive Type":"FWD",
+        "Fuel Type":"Petrol / Diesel",
+        "Mileage":"20.1 km/l (Diesel approx)",
+        "Fuel Tank Capacity":"42 Litres",
+        "Length":"3995 mm",
+        "Width":"1821 mm",
+        "Height":"1627 mm",
+        "Wheelbase":"2600 mm",
+        "Ground Clearance":"180 mm",
+        "Boot Space":"257 Litres",
+        "Suspension":"Independent Front / Twist Beam Rear",
+        "Brakes":"Disc (All Wheels)",
+        "Safety Rating":"5-Star (Global NCAP)",
+        "Steering Modes":"Comfort / Normal / Sport"
+    },
+
+    variants:[
+        { name:"W4", price:"₹7.99 Lakh", details:"Base variant" },
+        { name:"W6", price:"₹9.50 Lakh", details:"Adds infotainment & comfort features" },
+        { name:"W8", price:"₹11.20 Lakh", details:"Mid variant with better features" },
+        { name:"W8 (O)", price:"₹13.50 Lakh", details:"Fully loaded variant" },
+        { name:"W8 Opt AMT", price:"₹14.76 Lakh", details:"Top automatic variant" }
+    ],
+
+    pros:[
+        "Best-in-class safety rating",
+        "Strong diesel performance",
+        "Solid build quality",
+        "Three steering modes (rare in segment)",
+        "Good highway stability"
+    ],
+
+    cons:[
+        "Rear seat space is slightly tight",
+        "Infotainment feels dated in base trims",
+        "Boot space is small",
+        "Fuel efficiency is average in petrol"
+    ]
+},
+
+i20:{
+    name:"Hyundai i20",
+    price:"₹7.04 – ₹11.25 Lakh (ex-showroom)",
+    engine:"1.2L Kappa Petrol",
+    mileage:"20 – 20.35 km/l",
+    type:"Hatchback",
+
+    overview:`The Hyundai i20 is a premium hatchback that focuses on comfort, features, and refined driving experience rather than outright sportiness. It stands out with its sharp design, high-quality interiors, and segment-leading feature list.
+
+The 1.2L naturally aspirated petrol engine is tuned for smooth and linear performance, making it ideal for city driving. The steering is light, and ride quality is well-balanced, absorbing most road imperfections comfortably.
+
+Inside, the i20 offers one of the best cabins in its class with a 10.25-inch touchscreen, digital instrument cluster, Bose sound system, and connected car tech. Safety is also improved with 6 airbags standard.
+
+It is best suited for buyers who want a premium, comfortable, and feature-rich hatchback rather than a sporty one.`,
+
+    images:[
+        "Img2/i201.jpg",
+        "Img2/i202.jpg",
+        "Img2/i203.jpg",
+        "Img2/i204.jpg"
+    ],
+
+    specs:{
+        "Engine Type":"1.2L Kappa Petrol",
+        "Displacement":"1197 cc",
+        "No. of Cylinders":"4",
+        "Max Power":"83 PS @ 6000 rpm",
+        "Max Torque":"114.7 Nm @ 4200 rpm",
+        "Transmission":"5MT / CVT (IVT)",
+        "Drive Type":"FWD",
+        "Fuel Type":"Petrol",
+        "Mileage (ARAI)":"20.35 km/l",
+        "Top Speed":"~160 km/h",
+        "Fuel Tank Capacity":"37 Litres",
+        "Length":"3995 mm",
+        "Width":"1775 mm",
+        "Height":"1505 mm",
+        "Wheelbase":"2580 mm",
+        "Ground Clearance":"170 mm",
+        "Boot Space":"311 Litres",
+        "Suspension Front":"MacPherson Strut",
+        "Suspension Rear":"Coupled Torsion Beam",
+        "Brakes Front":"Disc",
+        "Brakes Rear":"Drum",
+        "Tyre Size":"195/55 R16",
+        "Airbags":"6 (Standard)"
+    },
+
+    variants:[
+        { name:"Era", price:"₹7.04 Lakh", details:"Base variant, basic safety and essentials" },
+        { name:"Magna", price:"₹8.1 Lakh", details:"Adds touchscreen and convenience features" },
+        { name:"Sportz", price:"₹9.2 Lakh", details:"Most value-for-money, better features and styling" },
+        { name:"Asta", price:"₹10.4 Lakh", details:"Premium features like alloys, push start" },
+        { name:"Asta(O)", price:"₹11.25 Lakh", details:"Top variant with Bose audio, digital cluster" }
+    ],
+
+    pros:[
+        "Premium interior quality and fit-finish",
+        "Smooth and refined petrol engine",
+        "Feature-loaded (Bose audio, digital cluster)",
+        "Comfortable ride quality",
+        "6 airbags standard across variants"
+    ],
+
+    cons:[
+        "Not as powerful as turbo rivals",
+        "Expensive compared to competitors",
+        "No diesel engine option",
+        "Mileage is average in real-world city use",
+        "Handling not very sporty"
+    ]
+},
+
+city:{
+    name:"Honda City",
+    price:"₹11.82 – ₹16.35 Lakh (ex-showroom)",
+    engine:"1.5L i-VTEC Petrol",
+    mileage:"17.8 – 18.4 km/l",
+    type:"Sedan",
+
+    overview:`The Honda City is one of the most trusted and long-standing sedans in India, known for its refined engine, spacious cabin, and excellent ride comfort. It continues to be a benchmark in the midsize sedan segment.
+
+The 1.5L i-VTEC petrol engine is highly refined and delivers smooth, linear power, making it enjoyable for both city and highway driving. The CVT gearbox further enhances comfort with seamless acceleration.
+
+The cabin is spacious, especially in the rear seat, offering excellent legroom and comfort. It also comes equipped with modern features like a large touchscreen, wireless connectivity, and Honda Sensing (ADAS).
+
+It is ideal for buyers who prioritize comfort, reliability, and a premium sedan experience over sporty driving.`,
+
+    images:[
+        "Img2/city1.jpg",
+        "Img2/city2.jpg",
+        "Img2/city3.jpg",
+        "Img2/city4.jpg"
+    ],
+
+    specs:{
+        "Engine Type":"1.5L i-VTEC Petrol",
+        "Displacement":"1498 cc",
+        "No. of Cylinders":"4",
+        "Max Power":"121 PS @ 6600 rpm",
+        "Max Torque":"145 Nm @ 4300 rpm",
+        "Transmission":"6MT / CVT",
+        "Drive Type":"FWD",
+        "Fuel Type":"Petrol",
+        "Mileage (ARAI)":"18.4 km/l",
+        "Top Speed":"~190 km/h",
+        "Fuel Tank Capacity":"40 Litres",
+        "Length":"4583 mm",
+        "Width":"1748 mm",
+        "Height":"1489 mm",
+        "Wheelbase":"2600 mm",
+        "Ground Clearance":"165 mm",
+        "Boot Space":"506 Litres",
+        "Suspension Front":"MacPherson Strut",
+        "Suspension Rear":"Torsion Beam",
+        "Brakes Front":"Disc",
+        "Brakes Rear":"Disc",
+        "ADAS":"Honda Sensing (Level 2)"
+    },
+
+    variants:[
+        { name:"SV", price:"₹11.82 Lakh", details:"Base variant with essential features" },
+        { name:"V", price:"₹13.0 Lakh", details:"Adds touchscreen and connectivity" },
+        { name:"VX", price:"₹14.5 Lakh", details:"Premium features and comfort upgrades" },
+        { name:"ZX", price:"₹16.35 Lakh", details:"Top variant with ADAS and full features" }
+    ],
+
+    pros:[
+        "Highly refined and reliable engine",
+        "Very spacious rear seat comfort",
+        "Smooth CVT gearbox",
+        "Large boot space (best in class)",
+        "ADAS safety features available"
+    ],
+
+    cons:[
+        "Low ground clearance for bad roads",
+        "Not as sporty as some rivals",
+        "Interior design feels simple",
+        "No diesel engine option"
+    ]
+},
+
+thar:{
+    name:"Mahindra Thar",
+    price:"₹11.35 – ₹17.60 Lakh (ex-showroom)",
+    engine:"2.0L Turbo Petrol / 2.2L Diesel",
+    mileage:"13 – 15 km/l",
+    type:"SUV",
+
+    overview:`The Mahindra Thar is a lifestyle off-road SUV designed primarily for adventure and rugged terrain. It is one of the most capable off-road vehicles in its segment, equipped with a proper 4x4 drivetrain and high ground clearance.
+
+The petrol engine offers strong performance, while the diesel engine provides excellent low-end torque for off-roading. The Thar features a ladder-frame chassis, making it durable for rough usage.
+
+The newer generation has improved interiors with a touchscreen infotainment system, roof-mounted speakers, and better overall comfort compared to the older model.
+
+It is best suited for enthusiasts who prioritize off-road capability and road presence over everyday practicality.`,
+
+    images:[
+        "Img2/thar1.jpg",
+        "Img2/thar2.jpg",
+        "Img2/thar3.jpg",
+        "Img2/thar4.jpg"
+    ],
+
+    specs:{
+        "Engine Type":"2.0L Turbo Petrol / 2.2L Diesel",
+        "Displacement":"1997 cc / 2184 cc",
+        "No. of Cylinders":"4",
+        "Max Power":"152 PS (Petrol) / 130 PS (Diesel)",
+        "Max Torque":"320 Nm (Petrol) / 300 Nm (Diesel)",
+        "Transmission":"6MT / 6AT",
+        "Drive Type":"4x4 (Standard)",
+        "Fuel Type":"Petrol / Diesel",
+        "Mileage":"~15 km/l",
+        "Top Speed":"~155 km/h",
+        "Fuel Tank Capacity":"57 Litres",
+        "Length":"3985 mm",
+        "Width":"1820 mm",
+        "Height":"1844 mm",
+        "Wheelbase":"2450 mm",
+        "Ground Clearance":"226 mm",
+        "Boot Space":"~190 Litres",
+        "Approach Angle":"41.8°",
+        "Departure Angle":"36.8°",
+        "Water Wading":"650 mm",
+        "Chassis":"Ladder Frame"
+    },
+
+    variants:[
+        { name:"AX (O)", price:"₹11.35 Lakh", details:"Base variant, focused on off-road capability" },
+        { name:"LX Hard Top", price:"₹15 Lakh", details:"Adds comfort and infotainment features" },
+        { name:"LX Convertible", price:"₹16 Lakh", details:"Soft-top version for lifestyle use" },
+        { name:"LX 4x4 AT", price:"₹17.60 Lakh", details:"Top variant with automatic gearbox" }
+    ],
+
+    pros:[
+        "Best-in-class off-road capability",
+        "Strong road presence and design",
+        "Powerful petrol and diesel engines",
+        "4x4 standard across variants",
+        "Improved interiors vs older model"
+    ],
+
+    cons:[
+        "Not comfortable for daily commuting",
+        "Limited rear seat space",
+        "Small boot space",
+        "High body roll on highways",
+        "Fuel efficiency is low"
+    ]
+},
+
+"nexon-ev":{
+    name:"Tata Nexon EV",
+    price:"₹14.49 – ₹19.49 Lakh (ex-showroom)",
+    engine:"Permanent Magnet Synchronous Motor",
+    mileage:"325 – 465 km (ARAI)",
+    type:"Electric SUV",
+
+    overview:`The Tata Nexon EV is one of India’s most popular electric SUVs, offering a practical balance between range, performance, and affordability. It is available in multiple battery options, making it suitable for both city users and highway travelers.
+
+The electric motor delivers instant torque, resulting in quick acceleration and a smooth, silent driving experience. The larger battery variants provide extended range, making it more usable for long-distance travel compared to earlier EVs.
+
+Inside, the Nexon EV features a modern cabin with a large infotainment screen, digital instrument cluster, JBL sound system, wireless connectivity, and advanced connected car technology.
+
+It is ideal for buyers looking to transition to electric mobility without compromising on practicality, safety, or features.`,
+
+    images:[
+        "Img2/nexon_ev1.jpg",
+        "Img2/nexon_ev2.jpg",
+        "Img2/nexon_ev3.jpg",
+        "Img2/nexon_ev4.jpg"
+    ],
+
+    specs:{
+        "Motor Type":"Permanent Magnet Synchronous",
+        "Battery Pack":"30 kWh (MR) / 40.5 kWh (LR)",
+        "Max Power":"129 PS (MR) / 145 PS (LR)",
+        "Max Torque":"215 Nm",
+        "Drive Type":"FWD",
+        "Range (ARAI)":"325 km / 465 km",
+        "Real World Range":"250 – 400 km",
+        "0-100 km/h":"~9 sec",
+        "Top Speed":"~150 km/h",
+        "Charging (AC)":"~8–9 hrs (10–100%)",
+        "Charging (DC Fast)":"~56 min (10–80%)",
+        "Length":"3994 mm",
+        "Width":"1811 mm",
+        "Height":"1616 mm",
+        "Wheelbase":"2498 mm",
+        "Ground Clearance":"205 mm",
+        "Boot Space":"350 Litres",
+        "Battery Warranty":"8 years / 1.6 lakh km",
+        "Safety":"5-Star (Global NCAP)"
+    },
+
+    variants:[
+        { name:"Creative MR", price:"₹14.49 Lakh", details:"Base variant with smaller battery" },
+        { name:"Fearless MR", price:"₹16 Lakh", details:"More features with medium range" },
+        { name:"Fearless+ LR", price:"₹18 Lakh", details:"Long range battery with premium features" },
+        { name:"Empowered+ LR", price:"₹19.49 Lakh", details:"Top variant with all features and max range" }
+    ],
+
+    pros:[
+        "Strong real-world usable range",
+        "Very low running cost (electric)",
+        "Instant acceleration and smooth drive",
+        "High safety rating",
+        "Feature-rich cabin with modern tech"
+    ],
+
+    cons:[
+        "Charging infrastructure still developing",
+        "Higher upfront cost than petrol cars",
+        "Long charging time on home charger",
+        "Boot space slightly reduced due to battery"
+    ]
+},
+
+"alto-k10":{
+    name:"Maruti Suzuki Alto K10",
+    price:"₹3.99 – ₹5.96 Lakh (ex-showroom)",
+    engine:"1.0L K-Series DualJet Petrol",
+    mileage:"24.39 km/l",
+    type:"Hatchback",
+
+    overview:`The Maruti Alto K10 is an entry-level hatchback designed for affordability, ease of driving, and excellent fuel efficiency. It is one of the most accessible cars in India, especially for first-time buyers.
+
+The 1.0L K-Series engine is lightweight and responsive, offering surprisingly peppy performance for city use. The compact dimensions make it extremely easy to maneuver in traffic and tight parking spaces.
+
+The interior is simple but functional, offering basic infotainment and essential safety features. It focuses more on practicality and cost-effectiveness rather than premium feel.
+
+It is best suited for buyers looking for a budget-friendly, low-maintenance, and highly efficient daily commuter.`,
+
+    images:[
+        "Img2/k101.jpg",
+        "Img2/k102.jpg",
+        "Img2/k103.jpg",
+        "Img2/k104.jpg"
+    ],
+
+    specs:{
+        "Engine Type":"1.0L K-Series DualJet Petrol",
+        "Displacement":"998 cc",
+        "No. of Cylinders":"3",
+        "Max Power":"67 PS @ 5500 rpm",
+        "Max Torque":"89 Nm @ 3500 rpm",
+        "Transmission":"5MT / AMT",
+        "Drive Type":"FWD",
+        "Fuel Type":"Petrol / CNG",
+        "Mileage (ARAI)":"24.39 km/l",
+        "Top Speed":"~140 km/h",
+        "Fuel Tank Capacity":"27 Litres",
+        "Length":"3530 mm",
+        "Width":"1490 mm",
+        "Height":"1520 mm",
+        "Wheelbase":"2380 mm",
+        "Ground Clearance":"160 mm",
+        "Boot Space":"214 Litres",
+        "Kerb Weight":"~790 kg",
+        "Brakes":"Disc (Front) / Drum (Rear)",
+        "Airbags":"2 (Standard)"
+    },
+
+    variants:[
+        { name:"Std", price:"₹3.99 Lakh", details:"Basic variant, minimal features" },
+        { name:"LXi", price:"₹4.8 Lakh", details:"Adds essential comfort features" },
+        { name:"VXi", price:"₹5.3 Lakh", details:"Infotainment and convenience features" },
+        { name:"VXi+", price:"₹5.96 Lakh", details:"Top variant with touchscreen and styling upgrades" }
+    ],
+
+    pros:[
+        "Very affordable pricing",
+        "Excellent fuel efficiency",
+        "Low maintenance cost",
+        "Easy to drive in city traffic",
+        "Peppy performance for its size"
+    ],
+
+    cons:[
+        "Very basic interior quality",
+        "Limited space for rear passengers",
+        "Not suitable for highway driving",
+        "Low safety compared to bigger cars",
+        "Minimal features in lower variants"
+    ]
+},
+
+wagonr:{
+    name:"Maruti Suzuki WagonR",
+    price:"₹5.54 – ₹7.42 Lakh (ex-showroom)",
+    engine:"1.0L / 1.2L Petrol",
+    mileage:"24.35 – 25.19 km/l",
+    type:"Hatchback",
+
+    overview:`The Maruti WagonR is one of the most practical hatchbacks in India, known for its tall-boy design, spacious cabin, and ease of use. It is especially popular among families due to its comfort and practicality.
+
+The car offers two engine options — a 1.0L for better efficiency and a 1.2L for stronger performance. The tall design ensures excellent headroom and easy ingress/egress, making it comfortable for elderly passengers as well.
+
+It is designed primarily for city usage, with light steering, good visibility, and easy drivability. The focus is on practicality rather than style or sporty performance.
+
+It is ideal for families looking for a spacious, efficient, and easy-to-maintain city car.`,
+
+    images:[
+        "Img2/wagonr1.jpg",
+        "Img2/wagonr2.jpg",
+        "Img2/wagonr3.jpg",
+        "Img2/wagonr4.jpg"
+    ],
+
+    specs:{
+        "Engine Type":"1.0L / 1.2L Petrol",
+        "Displacement":"998 cc / 1197 cc",
+        "No. of Cylinders":"3 / 4",
+        "Max Power":"67 PS / 90 PS",
+        "Max Torque":"89 Nm / 113 Nm",
+        "Transmission":"5MT / AMT",
+        "Drive Type":"FWD",
+        "Fuel Type":"Petrol / CNG",
+        "Mileage (ARAI)":"25.19 km/l",
+        "Fuel Tank Capacity":"32 Litres",
+        "Length":"3655 mm",
+        "Width":"1620 mm",
+        "Height":"1675 mm",
+        "Wheelbase":"2435 mm",
+        "Ground Clearance":"165 mm",
+        "Boot Space":"341 Litres",
+        "Kerb Weight":"~900 kg",
+        "Brakes":"Disc (Front) / Drum (Rear)",
+        "Airbags":"2 (Standard)"
+    },
+
+    variants:[
+        { name:"LXi", price:"₹5.54 Lakh", details:"Base variant with essential features" },
+        { name:"VXi", price:"₹6.2 Lakh", details:"Adds infotainment and convenience" },
+        { name:"ZXi", price:"₹6.9 Lakh", details:"More powerful engine and features" },
+        { name:"ZXi+", price:"₹7.42 Lakh", details:"Top variant with touchscreen and styling upgrades" }
+    ],
+
+    pros:[
+        "Very spacious cabin (best in segment)",
+        "Excellent fuel efficiency",
+        "Easy to drive and maneuver",
+        "Low maintenance and reliable",
+        "Comfortable for daily city use"
+    ],
+
+    cons:[
+        "Boxy design may not appeal to everyone",
+        "Not stable at high speeds",
+        "Average build quality",
+        "Limited features in lower variants",
+        "Not meant for spirited driving"
+    ]
+},
+
+seltos:{
+    name:"Kia Seltos",
+    price:"₹10.90 – ₹20.35 Lakh (ex-showroom)",
+    engine:"1.5L NA Petrol / 1.5L Turbo Petrol / 1.5L Diesel",
+    mileage:"17 – 20.7 km/l",
+    type:"SUV",
+
+    overview:`The Kia Seltos is a premium compact SUV known for its bold design, feature-rich cabin, and multiple powertrain options. It offers a wide range of engines including a naturally aspirated petrol, a turbo petrol for performance enthusiasts, and a diesel for efficiency.
+
+The turbo petrol variant delivers strong acceleration and engaging performance, while the diesel engine is ideal for long-distance driving due to its high torque and fuel efficiency.
+
+The cabin is one of the most feature-loaded in the segment, offering dual 10.25-inch displays, ventilated seats, a premium Bose sound system, panoramic sunroof, and ADAS safety features.
+
+It is best suited for buyers looking for a stylish, powerful, and feature-packed SUV with multiple engine choices.`,
+
+    images:[
+        "Img2/seltos1.jpg",
+        "Img2/seltos2.jpg",
+        "Img2/seltos3.jpg",
+        "Img2/seltos4.jpg"
+    ],
+
+    specs:{
+        "Engine Type":"1.5L NA / Turbo / Diesel",
+        "Displacement":"1497 cc",
+        "No. of Cylinders":"4",
+        "Max Power":"115 PS (NA) / 160 PS (Turbo) / 116 PS (Diesel)",
+        "Max Torque":"144 Nm / 253 Nm / 250 Nm",
+        "Transmission":"6MT / iMT / CVT / 7DCT / 6AT",
+        "Drive Type":"FWD",
+        "Fuel Type":"Petrol / Diesel",
+        "Mileage (ARAI)":"20.7 km/l (Diesel)",
+        "Top Speed":"~200 km/h (Turbo)",
+        "Fuel Tank Capacity":"50 Litres",
+        "Length":"4365 mm",
+        "Width":"1800 mm",
+        "Height":"1645 mm",
+        "Wheelbase":"2610 mm",
+        "Ground Clearance":"190 mm",
+        "Boot Space":"433 Litres",
+        "Suspension":"MacPherson Strut / Coupled Torsion Beam",
+        "Brakes":"Disc (All Wheels)",
+        "ADAS":"Level 2"
+    },
+
+    variants:[
+        { name:"HTE", price:"₹10.90 Lakh", details:"Base variant with essential features" },
+        { name:"HTK", price:"₹12.5 Lakh", details:"Adds infotainment and comfort features" },
+        { name:"HTX", price:"₹15.5 Lakh", details:"Premium features and styling upgrades" },
+        { name:"GTX+", price:"₹18.5 Lakh", details:"Turbo engine with sporty features" },
+        { name:"X-Line", price:"₹20.35 Lakh", details:"Top variant with matte finish and full features" }
+    ],
+
+    pros:[
+        "Wide range of engine and gearbox options",
+        "Very feature-rich cabin (best in segment)",
+        "Strong turbo petrol performance",
+        "Premium interior quality",
+        "ADAS safety features available"
+    ],
+
+    cons:[
+        "Expensive top variants",
+        "Ride quality slightly firm over bumps",
+        "Fuel efficiency drops in turbo variant",
+        "Safety rating not class-leading"
+    ]
+},
+
+creta:{
+    name:"Hyundai Creta",
+    price:"₹11.00 – ₹20.15 Lakh (ex-showroom)",
+    engine:"1.5L NA Petrol / 1.5L Turbo Petrol / 1.5L Diesel",
+    mileage:"17 – 21.8 km/l",
+    type:"SUV",
+
+    overview:`The Hyundai Creta is one of the best-selling SUVs in India, known for its comfort, refined engines, and premium feature list. It offers a balanced driving experience suitable for both city and highway usage.
+
+The naturally aspirated petrol engine focuses on smoothness, the turbo petrol delivers strong performance, and the diesel engine provides excellent fuel efficiency and torque.
+
+The interior is modern and well-built, featuring dual screens, ventilated seats, panoramic sunroof, Bose audio system, and Level 2 ADAS.
+
+It is ideal for buyers looking for a comfortable, feature-rich, and well-rounded SUV with strong resale value.`,
+
+    images:[
+        "Img2/creta1.jpg",
+        "Img2/creta2.jpg",
+        "Img2/creta3.jpg",
+        "Img2/creta4.jpg"
+    ],
+
+    specs:{
+        "Engine Type":"1.5L NA / Turbo / Diesel",
+        "Displacement":"1497 cc",
+        "No. of Cylinders":"4",
+        "Max Power":"115 PS (NA) / 160 PS (Turbo) / 116 PS (Diesel)",
+        "Max Torque":"144 Nm / 253 Nm / 250 Nm",
+        "Transmission":"6MT / CVT / 7DCT / 6AT",
+        "Drive Type":"FWD",
+        "Fuel Type":"Petrol / Diesel",
+        "Mileage (ARAI)":"21.8 km/l (Diesel)",
+        "Top Speed":"~195 km/h",
+        "Fuel Tank Capacity":"50 Litres",
+        "Length":"4330 mm",
+        "Width":"1790 mm",
+        "Height":"1635 mm",
+        "Wheelbase":"2610 mm",
+        "Ground Clearance":"190 mm",
+        "Boot Space":"433 Litres",
+        "Suspension":"MacPherson Strut / Torsion Beam",
+        "Brakes":"Disc (All Wheels)",
+        "ADAS":"Level 2"
+    },
+
+    variants:[
+        { name:"E", price:"₹11.00 Lakh", details:"Base variant" },
+        { name:"S", price:"₹13.5 Lakh", details:"Adds comfort and infotainment" },
+        { name:"SX", price:"₹16.5 Lakh", details:"Premium features and styling" },
+        { name:"SX(O)", price:"₹18.5 Lakh", details:"Adds ADAS and luxury features" },
+        { name:"SX(O) Turbo", price:"₹20.15 Lakh", details:"Top performance variant" }
+    ],
+
+    pros:[
+        "Very comfortable ride quality",
+        "Refined and reliable engines",
+        "Feature-loaded interior",
+        "Strong resale value",
+        "Good balance for city and highway"
+    ],
+
+    cons:[
+        "Expensive top variants",
+        "Build quality not the strongest",
+        "Not very engaging to drive",
+        "Turbo variants are costly"
+    ]
+},
+
+fortuner:{
+    name:"Toyota Fortuner",
+    price:"₹33.5 – ₹51.5 Lakh (ex-showroom)",
+    engine:"2.7L Petrol / 2.8L Diesel",
+    mileage:"10 – 14.4 km/l",
+    type:"SUV",
+
+    overview:`The Toyota Fortuner is a full-size SUV known for its dominance in the premium SUV segment. It offers a strong combination of power, durability, and reliability, making it a favorite among both private and commercial buyers.
+
+The 2.8L diesel engine is the highlight, delivering massive torque and effortless performance for highway cruising and off-road conditions. The ladder-frame chassis ensures toughness and long-term durability.
+
+The Fortuner is also capable off-road with its 4x4 drivetrain, high ground clearance, and terrain modes. However, the interior focuses more on durability than luxury compared to newer rivals.
+
+It is best suited for buyers looking for a powerful, reliable, and commanding SUV with strong resale value and off-road capability.`,
+
+    images:[
+        "Img2/fortuner1.jpg",
+        "Img2/fortuner2.jpg",
+        "Img2/fortuner3.jpg",
+        "Img2/fortuner4.jpg"
+    ],
+
+    specs:{
+        "Engine Type":"2.7L Petrol / 2.8L Diesel",
+        "Displacement":"2694 cc / 2755 cc",
+        "No. of Cylinders":"4",
+        "Max Power":"166 PS (Petrol) / 204 PS (Diesel)",
+        "Max Torque":"245 Nm / 500 Nm",
+        "Transmission":"5MT / 6MT / 6AT",
+        "Drive Type":"RWD / 4x4",
+        "Fuel Type":"Petrol / Diesel",
+        "Mileage":"14.4 km/l (Diesel)",
+        "Top Speed":"~190 km/h",
+        "Fuel Tank Capacity":"80 Litres",
+        "Length":"4795 mm",
+        "Width":"1855 mm",
+        "Height":"1835 mm",
+        "Wheelbase":"2745 mm",
+        "Ground Clearance":"225 mm",
+        "Boot Space":"~296 Litres",
+        "Chassis":"Ladder Frame",
+        "Suspension":"Double Wishbone / Multi-link",
+        "Brakes":"Disc (All Wheels)"
+    },
+
+    variants:[
+        { name:"4x2", price:"₹33.5 Lakh", details:"Base variant, rear-wheel drive" },
+        { name:"4x4", price:"₹40 Lakh", details:"Adds off-road capability" },
+        { name:"Legender", price:"₹45 Lakh", details:"Premium styling and features" },
+        { name:"GR-S", price:"₹51.5 Lakh", details:"Top variant with sportier tuning" }
+    ],
+
+    pros:[
+        "Extremely reliable and durable",
+        "Very powerful diesel engine",
+        "Excellent resale value",
+        "Strong road presence",
+        "Capable off-road performance"
+    ],
+
+    cons:[
+        "Very expensive",
+        "Interior not very modern for price",
+        "Ride quality is stiff at low speeds",
+        "Fuel efficiency is low",
+        "Large size makes city driving difficult"
+    ]
+},
+
+scorpio:{
+    name:"Mahindra Scorpio",
+    price:"₹13.6 – ₹24.5 Lakh (ex-showroom)",
+    engine:"2.2L mHawk Diesel",
+    mileage:"14 – 16 km/l",
+    type:"SUV",
+
+    overview:`The Mahindra Scorpio is a rugged SUV known for its durability, commanding road presence, and strong diesel performance. It is available in two forms — the classic Scorpio and the more modern Scorpio-N, which brings better comfort and technology.
+
+The 2.2L diesel engine delivers strong low-end torque, making it suitable for both city and highway driving. The ladder-frame chassis ensures toughness, especially on rough roads.
+
+The Scorpio-N version improves significantly in terms of ride quality, handling, and interior features, including a touchscreen infotainment system, connected tech, and better safety.
+
+It is ideal for buyers looking for a tough, reliable SUV with strong road presence and the ability to handle rough terrain.`,
+
+    images:[
+        "Img2/scorpio1.jpg",
+        "Img2/scorpio2.jpg",
+        "Img2/scorpio3.jpg",
+        "Img2/scorpio4.jpg"
+    ],
+
+    specs:{
+        "Engine Type":"2.2L mHawk Diesel",
+        "Displacement":"2184 cc",
+        "No. of Cylinders":"4",
+        "Max Power":"130 – 175 PS",
+        "Max Torque":"300 – 400 Nm",
+        "Transmission":"6MT / 6AT",
+        "Drive Type":"RWD / 4x4 (Scorpio-N)",
+        "Fuel Type":"Diesel",
+        "Mileage":"16 km/l",
+        "Fuel Tank Capacity":"57 Litres",
+        "Length":"4662 mm (Scorpio-N)",
+        "Width":"1917 mm",
+        "Height":"1857 mm",
+        "Wheelbase":"2750 mm",
+        "Ground Clearance":"187 mm",
+        "Boot Space":"~460 Litres (with seats folded)",
+        "Chassis":"Ladder Frame",
+        "Safety":"5-Star (Scorpio-N)"
+    },
+
+    variants:[
+        { name:"S", price:"₹13.6 Lakh", details:"Base variant, basic features" },
+        { name:"S7", price:"₹17 Lakh", details:"Adds comfort and infotainment" },
+        { name:"Z6", price:"₹19 Lakh", details:"More features and styling" },
+        { name:"Z8", price:"₹22 Lakh", details:"Premium features" },
+        { name:"Z8L", price:"₹24.5 Lakh", details:"Top variant with ADAS and 4x4 option" }
+    ],
+
+    pros:[
+        "Strong diesel engine with high torque",
+        "Excellent road presence",
+        "Good for rough roads and highways",
+        "Improved comfort in Scorpio-N",
+        "Available with 4x4 (Scorpio-N)"
+    ],
+
+    cons:[
+        "Ride quality still stiff at low speeds",
+        "Large size makes city driving difficult",
+        "Fuel efficiency is average",
+        "Interior not as premium as rivals"
+    ]
+},
+
+compass:{
+    name:"Jeep Compass",
+    price:"₹20 – ₹32 Lakh (ex-showroom)",
+    engine:"2.0L Multijet Diesel",
+    mileage:"14 – 17 km/l",
+    type:"SUV",
+
+    overview:`The Jeep Compass is a premium SUV known for its solid build quality, excellent ride and handling balance, and strong off-road capability. It carries Jeep’s global DNA and offers a refined driving experience.
+
+The 2.0L diesel engine delivers strong torque, making it suitable for both city driving and long highway journeys. The steering and suspension setup provide a stable and confident driving feel.
+
+The Compass also stands out with its 4x4 system (in select variants), terrain modes, and excellent grip on difficult surfaces.
+
+It is ideal for buyers looking for a premium, well-built SUV with strong driving dynamics and off-road capability.`,
+
+    images:[
+        "Img2/compass1.jpg",
+        "Img2/compass2.jpg",
+        "Img2/compass3.jpg",
+        "Img2/compass4.jpg",
+        "Img2/compass5.jpg"
+    ],
+
+    specs:{
+        "Engine Type":"2.0L Multijet Diesel",
+        "Displacement":"1956 cc",
+        "No. of Cylinders":"4",
+        "Max Power":"170 PS",
+        "Max Torque":"350 Nm",
+        "Transmission":"6MT / 9AT",
+        "Drive Type":"FWD / AWD",
+        "Fuel Type":"Diesel",
+        "Mileage":"17 km/l",
+        "Top Speed":"~190 km/h",
+        "Fuel Tank Capacity":"60 Litres",
+        "Length":"4405 mm",
+        "Width":"1818 mm",
+        "Height":"1640 mm",
+        "Wheelbase":"2636 mm",
+        "Ground Clearance":"178 mm",
+        "Boot Space":"438 Litres",
+        "Suspension":"Independent All Around",
+        "Brakes":"Disc (All Wheels)",
+        "Terrain Modes":"Auto / Snow / Sand / Mud"
+    },
+
+    variants:[
+        { name:"Sport", price:"₹20 Lakh", details:"Base variant" },
+        { name:"Longitude", price:"₹23 Lakh", details:"Adds features and comfort" },
+        { name:"Limited", price:"₹27 Lakh", details:"Premium interior and tech" },
+        { name:"Model S", price:"₹30 Lakh", details:"Luxury features" },
+        { name:"Trailhawk", price:"₹32 Lakh", details:"Top off-road focused variant (AWD)" }
+    ],
+
+    pros:[
+        "Excellent build quality",
+        "Great ride and handling balance",
+        "Strong diesel performance",
+        "Proper 4x4 capability (Trailhawk)",
+        "Premium feel"
+    ],
+
+    cons:[
+        "Expensive compared to rivals",
+        "No petrol engine currently",
+        "Maintenance cost is high",
+        "Fuel efficiency is average"
+    ]
+},
+
+harrier:{
+    name:"Tata Harrier",
+    price:"₹15.5 – ₹26 Lakh (ex-showroom)",
+    engine:"2.0L Kryotec Diesel",
+    mileage:"14 – 16 km/l",
+    type:"SUV",
+
+    overview:`The Tata Harrier is a premium SUV known for its bold design, strong road presence, and solid build quality. It is based on the OMEGA architecture derived from Land Rover, giving it strong structural strength.
+
+The 2.0L diesel engine provides good performance, especially on highways, with strong mid-range torque. The ride quality is comfortable, and the suspension handles rough roads well.
+
+The interior has been significantly upgraded with a large touchscreen, digital cluster, JBL sound system, ventilated seats, and ADAS safety features.
+
+It is ideal for buyers looking for a stylish, safe, and comfortable SUV with a strong road presence.`,
+
+    images:[
+        "Img2/harrier1.jpg",
+        "Img2/harrier2.jpg",
+        "Img2/harrier3.jpg",
+        "Img2/harrier4.jpg"
+    ],
+
+    specs:{
+        "Engine Type":"2.0L Kryotec Diesel",
+        "Displacement":"1956 cc",
+        "No. of Cylinders":"4",
+        "Max Power":"170 PS",
+        "Max Torque":"350 Nm",
+        "Transmission":"6MT / 6AT",
+        "Drive Type":"FWD",
+        "Fuel Type":"Diesel",
+        "Mileage":"16 km/l",
+        "Top Speed":"~180 km/h",
+        "Fuel Tank Capacity":"50 Litres",
+        "Length":"4605 mm",
+        "Width":"1922 mm",
+        "Height":"1718 mm",
+        "Wheelbase":"2741 mm",
+        "Ground Clearance":"205 mm",
+        "Boot Space":"445 Litres",
+        "Platform":"OMEGA (Land Rover derived)",
+        "Suspension":"Independent",
+        "Brakes":"Disc (All Wheels)",
+        "ADAS":"Level 2",
+        "Safety":"5-Star (Bharat NCAP)"
+    },
+
+    variants:[
+        { name:"Smart", price:"₹15.5 Lakh", details:"Base variant" },
+        { name:"Pure", price:"₹18 Lakh", details:"Adds infotainment and features" },
+        { name:"Creative", price:"₹21 Lakh", details:"More premium features" },
+        { name:"Fearless", price:"₹24 Lakh", details:"High-end features" },
+        { name:"Fearless+ Dark", price:"₹26 Lakh", details:"Top variant with full features and styling" }
+    ],
+
+    pros:[
+        "Strong road presence and design",
+        "Excellent build quality",
+        "Comfortable ride quality",
+        "Feature-rich modern cabin",
+        "High safety rating"
+    ],
+
+    cons:[
+        "No petrol engine option",
+        "Fuel efficiency is average",
+        "Automatic gearbox not the quickest",
+        "Infotainment can lag occasionally"
+    ]
+},
+
+ciaz:{
+    name:"Maruti Suzuki Ciaz",
+    price:"₹9.40 – ₹12.45 Lakh (ex-showroom)",
+    engine:"1.5L K-Series Smart Hybrid Petrol",
+    mileage:"20.65 km/l",
+    type:"Sedan",
+
+    overview:`The Maruti Ciaz is a mid-size sedan focused on comfort, fuel efficiency, and spaciousness. It is particularly known for offering excellent rear-seat comfort, making it a strong choice for chauffeur-driven buyers.
+
+The 1.5L petrol engine with mild-hybrid technology provides smooth and refined performance while improving fuel efficiency. It is tuned more for comfort rather than sporty driving.
+
+The cabin is spacious and practical, with ample legroom and a large boot, making it suitable for long-distance travel and family use.
+
+It is best suited for buyers looking for a comfortable, fuel-efficient, and low-maintenance sedan with strong practicality.`,
+
+    images:[
+        "Img2/ciaz1.jpg",
+        "Img2/ciaz2.jpg",
+        "Img2/ciaz3.jpg",
+        "Img2/ciaz4.jpg"
+    ],
+
+    specs:{
+        "Engine Type":"1.5L K-Series Smart Hybrid",
+        "Displacement":"1462 cc",
+        "No. of Cylinders":"4",
+        "Max Power":"103 PS @ 6000 rpm",
+        "Max Torque":"138 Nm @ 4400 rpm",
+        "Transmission":"5MT / 4AT",
+        "Drive Type":"FWD",
+        "Fuel Type":"Petrol",
+        "Mileage (ARAI)":"20.65 km/l",
+        "Top Speed":"~180 km/h",
+        "Fuel Tank Capacity":"43 Litres",
+        "Length":"4490 mm",
+        "Width":"1730 mm",
+        "Height":"1485 mm",
+        "Wheelbase":"2650 mm",
+        "Ground Clearance":"170 mm",
+        "Boot Space":"510 Litres",
+        "Kerb Weight":"~1055 kg",
+        "Suspension":"MacPherson Strut / Torsion Beam",
+        "Brakes":"Disc (Front) / Drum (Rear)",
+        "Airbags":"2 (Standard)"
+    },
+
+    variants:[
+        { name:"Sigma", price:"₹9.40 Lakh", details:"Base variant with essential features" },
+        { name:"Delta", price:"₹10.10 Lakh", details:"Adds infotainment and comfort" },
+        { name:"Zeta", price:"₹11.20 Lakh", details:"More premium features" },
+        { name:"Alpha", price:"₹12.45 Lakh", details:"Top variant with all features" }
+    ],
+
+    pros:[
+        "Very spacious rear seat (best in class)",
+        "Excellent fuel efficiency",
+        "Smooth and refined engine",
+        "Large boot space",
+        "Low maintenance cost"
+    ],
+
+    cons:[
+        "Lacks diesel engine option",
+        "Not very exciting to drive",
+        "Interior feels dated compared to rivals",
+        "Limited safety features"
+    ]
+},
+
+altroz:{
+    name:"Tata Altroz",
+    price:"₹6.65 – ₹10.80 Lakh (ex-showroom)",
+    engine:"1.2L Petrol / 1.5L Diesel / 1.2L Turbo Petrol",
+    mileage:"19 – 23 km/l",
+    type:"Hatchback",
+
+    overview:`The Tata Altroz is a premium hatchback known for its strong build quality, stylish design, and high safety standards. It stands out as one of the safest cars in its segment with a 5-star Global NCAP rating.
+
+It offers multiple engine options, including a petrol, diesel, and a turbo petrol for better performance. The car focuses on ride comfort and stability rather than aggressive driving.
+
+The interior is spacious and well-designed, offering a premium feel with features like a touchscreen infotainment system, digital cluster, and Harman sound system.
+
+It is ideal for buyers who prioritize safety, build quality, and comfortable driving over outright performance.`,
+
+    images:[
+        "Img2/altroz1.jpg",
+        "Img2/altroz2.jpg",
+        "Img2/altroz3.jpg",
+        "Img2/altroz4.jpg",
+        "Img2/altroz5.jpg"
+    ],
+
+    specs:{
+        "Engine Type":"1.2L Petrol / 1.5L Diesel / Turbo",
+        "Displacement":"1199 cc / 1497 cc",
+        "No. of Cylinders":"3 / 4",
+        "Max Power":"88 PS / 110 PS / 90 PS (Diesel)",
+        "Max Torque":"115 Nm / 200 Nm (Diesel)",
+        "Transmission":"5MT / DCA (Auto)",
+        "Drive Type":"FWD",
+        "Fuel Type":"Petrol / Diesel",
+        "Mileage":"23 km/l (Diesel)",
+        "Top Speed":"~165 km/h",
+        "Fuel Tank Capacity":"37 Litres",
+        "Length":"3990 mm",
+        "Width":"1755 mm",
+        "Height":"1523 mm",
+        "Wheelbase":"2501 mm",
+        "Ground Clearance":"165 mm",
+        "Boot Space":"345 Litres",
+        "Safety":"5-Star (Global NCAP)",
+        "Brakes":"Disc (Front) / Drum (Rear)"
+    },
+
+    variants:[
+        { name:"XE", price:"₹6.65 Lakh", details:"Base variant" },
+        { name:"XM", price:"₹7.5 Lakh", details:"Adds basic features" },
+        { name:"XT", price:"₹8.5 Lakh", details:"Mid variant with infotainment" },
+        { name:"XZ", price:"₹9.5 Lakh", details:"Premium features" },
+        { name:"XZ+", price:"₹10.80 Lakh", details:"Top variant with all features" }
+    ],
+
+    pros:[
+        "Excellent safety rating (5-star)",
+        "Solid build quality",
+        "Comfortable ride quality",
+        "Premium design",
+        "Diesel option available"
+    ],
+
+    cons:[
+        "Petrol engine feels underpowered",
+        "No strong automatic in lower variants",
+        "Infotainment can be slow",
+        "After-sales service inconsistent"
+    ]
+},
+
+glanza:{
+    name:"Toyota Glanza",
+    price:"₹6.86 – ₹10.00 Lakh (ex-showroom)",
+    engine:"1.2L K-Series Petrol",
+    mileage:"22.35 km/l",
+    type:"Hatchback",
+
+    overview:`The Toyota Glanza is a premium hatchback based on the Maruti Baleno, offering Toyota’s reliability and service network with improved warranty benefits.
+
+It is powered by a refined 1.2L petrol engine that focuses on smoothness and fuel efficiency rather than performance. The car is easy to drive and ideal for city usage.
+
+The interior is modern and feature-rich, offering a touchscreen infotainment system, connected car tech, heads-up display, and good cabin space.
+
+It is best suited for buyers looking for a reliable, fuel-efficient, and comfortable hatchback with strong after-sales support.`,
+
+    images:[
+        "Img2/glanza1.jpg",
+        "Img2/glanza2.jpg",
+        "Img2/glanza3.jpg",
+        "Img2/glanza4.jpg"
+    ],
+
+    specs:{
+        "Engine Type":"1.2L K-Series Petrol",
+        "Displacement":"1197 cc",
+        "No. of Cylinders":"4",
+        "Max Power":"90 PS @ 6000 rpm",
+        "Max Torque":"113 Nm @ 4400 rpm",
+        "Transmission":"5MT / AMT",
+        "Drive Type":"FWD",
+        "Fuel Type":"Petrol / CNG",
+        "Mileage (ARAI)":"22.35 km/l",
+        "Top Speed":"~170 km/h",
+        "Fuel Tank Capacity":"37 Litres",
+        "Length":"3990 mm",
+        "Width":"1745 mm",
+        "Height":"1500 mm",
+        "Wheelbase":"2520 mm",
+        "Ground Clearance":"170 mm",
+        "Boot Space":"318 Litres",
+        "Kerb Weight":"~920 kg",
+        "Brakes":"Disc (Front) / Drum (Rear)",
+        "Airbags":"2 (Standard)"
+    },
+
+    variants:[
+        { name:"E", price:"₹6.86 Lakh", details:"Base variant" },
+        { name:"S", price:"₹7.8 Lakh", details:"Adds infotainment" },
+        { name:"G", price:"₹9 Lakh", details:"More premium features" },
+        { name:"V", price:"₹10.00 Lakh", details:"Top variant with all features" }
+    ],
+
+    pros:[
+        "Very refined and smooth engine",
+        "Excellent fuel efficiency",
+        "Comfortable ride quality",
+        "Toyota reliability and service",
+        "Feature-rich cabin"
+    ],
+
+    cons:[
+        "Not very sporty to drive",
+        "Similar to Baleno (less uniqueness)",
+        "Build quality is average",
+        "No diesel option"
+    ]
+},
+
+xuv700:{
+    name:"Mahindra XUV700",
+    price:"₹13.99 – ₹26.99 Lakh (ex-showroom)",
+    engine:"2.0L Turbo Petrol / 2.2L mHawk Diesel",
+    mileage:"13 – 17 km/l",
+    type:"SUV",
+
+    overview:`The Mahindra XUV700 is a modern premium SUV that combines strong performance, advanced technology, and high safety standards. It has quickly become one of the most popular SUVs in India due to its value-for-money proposition.
+
+The turbo petrol engine delivers strong performance, while the diesel engine offers excellent torque and efficiency, especially for highway usage. The SUV is available in both 5- and 7-seater configurations.
+
+The interior is highly advanced, featuring dual 10.25-inch screens, Sony 3D sound system, panoramic sunroof, and connected car technology. It also offers Level 2 ADAS, making it one of the safest cars in its segment.
+
+It is ideal for buyers looking for a powerful, feature-rich, and safe SUV with both family and performance appeal.`,
+
+    images:[
+        "Img2/xuv7001.jpg",
+        "Img2/xuv7002.jpg",
+        "Img2/xuv7003.jpg",
+        "Img2/xuv7004.jpg"
+    ],
+
+    specs:{
+        "Engine Type":"2.0L Turbo Petrol / 2.2L Diesel",
+        "Displacement":"1999 cc / 2184 cc",
+        "No. of Cylinders":"4",
+        "Max Power":"200 PS (Petrol) / 185 PS (Diesel)",
+        "Max Torque":"380 Nm / 420–450 Nm",
+        "Transmission":"6MT / 6AT",
+        "Drive Type":"FWD / AWD",
+        "Fuel Type":"Petrol / Diesel",
+        "Mileage":"17 km/l (Diesel)",
+        "Top Speed":"~200 km/h",
+        "Fuel Tank Capacity":"60 Litres",
+        "Length":"4695 mm",
+        "Width":"1890 mm",
+        "Height":"1755 mm",
+        "Wheelbase":"2750 mm",
+        "Ground Clearance":"200 mm",
+        "Boot Space":"~240 Litres (7-seater)",
+        "Suspension":"Independent All Around",
+        "Brakes":"Disc (All Wheels)",
+        "ADAS":"Level 2",
+        "Safety":"5-Star (Global NCAP)"
+    },
+
+    variants:[
+        { name:"MX", price:"₹13.99 Lakh", details:"Base variant" },
+        { name:"AX3", price:"₹16 Lakh", details:"Adds infotainment and features" },
+        { name:"AX5", price:"₹18 Lakh", details:"More comfort and tech" },
+        { name:"AX7", price:"₹22 Lakh", details:"Premium features with ADAS" },
+        { name:"AX7L", price:"₹26.99 Lakh", details:"Top variant with AWD and all features" }
+    ],
+
+    pros:[
+        "Powerful petrol and diesel engines",
+        "Advanced features and technology",
+        "High safety rating with ADAS",
+        "Spacious cabin with 7-seat option",
+        "Strong value for money"
+    ],
+
+    cons:[
+        "Fuel efficiency is average",
+        "Third row is tight for adults",
+        "Infotainment can lag occasionally",
+        "High waiting period in some areas"
+    ]
+},
+
+amaze:{
+    name:"Honda Amaze",
+    price:"₹7.20 – ₹9.96 Lakh (ex-showroom)",
+    engine:"1.2L i-VTEC Petrol",
+    mileage:"18.6 km/l",
+    type:"Sedan",
+
+    overview:`The Honda Amaze is a compact sedan known for its comfort, smooth engine, and reliability. It is one of the most refined cars in its segment, making it ideal for both city and highway use.
+
+The 1.2L petrol engine delivers a smooth and linear performance, and the CVT automatic transmission is one of the best in its class for city driving.
+
+The cabin is spacious for its segment, offering good rear-seat comfort and a decent boot space. It focuses on practicality and ease of use rather than aggressive styling or performance.
+
+It is best suited for buyers looking for a comfortable, reliable, and easy-to-drive sedan with a smooth automatic option.`,
+
+    images:[
+        "Img2/amaze1.jpg",
+        "Img2/amaze2.jpg",
+        "Img2/amaze3.jpg",
+        "Img2/amaze4.jpg"
+    ],
+
+    specs:{
+        "Engine Type":"1.2L i-VTEC Petrol",
+        "Displacement":"1199 cc",
+        "No. of Cylinders":"4",
+        "Max Power":"90 PS @ 6000 rpm",
+        "Max Torque":"110 Nm @ 4800 rpm",
+        "Transmission":"5MT / CVT",
+        "Drive Type":"FWD",
+        "Fuel Type":"Petrol",
+        "Mileage (ARAI)":"18.6 km/l",
+        "Top Speed":"~170 km/h",
+        "Fuel Tank Capacity":"35 Litres",
+        "Length":"3995 mm",
+        "Width":"1695 mm",
+        "Height":"1501 mm",
+        "Wheelbase":"2470 mm",
+        "Ground Clearance":"170 mm",
+        "Boot Space":"420 Litres",
+        "Kerb Weight":"~940 kg",
+        "Suspension":"MacPherson Strut / Torsion Beam",
+        "Brakes":"Disc (Front) / Drum (Rear)",
+        "Airbags":"2 (Standard)"
+    },
+
+    variants:[
+        { name:"E", price:"₹7.20 Lakh", details:"Base variant" },
+        { name:"S", price:"₹8.10 Lakh", details:"Adds basic features" },
+        { name:"VX", price:"₹9.10 Lakh", details:"Mid variant with more comfort" },
+        { name:"ZX", price:"₹9.96 Lakh", details:"Top variant with full features" }
+    ],
+
+    pros:[
+        "Very smooth and refined engine",
+        "Best-in-class CVT automatic",
+        "Comfortable ride quality",
+        "Reliable and low maintenance",
+        "Spacious boot"
+    ],
+
+    cons:[
+        "No diesel option now",
+        "Interior feels basic",
+        "Not very sporty to drive",
+        "Limited features compared to rivals"
+    ]
+},
+
+kwid:{
+    name:"Renault Kwid",
+    price:"₹4.70 – ₹6.45 Lakh (ex-showroom)",
+    engine:"0.8L / 1.0L Petrol",
+    mileage:"21.7 – 22.3 km/l",
+    type:"Hatchback",
+
+    overview:`The Renault Kwid is an entry-level hatchback that stands out with its SUV-inspired styling and high ground clearance. It is designed to offer affordability along with a bold design.
+
+The 1.0L engine provides better performance compared to the smaller 0.8L engine, making it more suitable for city driving. The AMT gearbox adds convenience for urban usage.
+
+The interior features a touchscreen infotainment system, which is rare in this price segment, along with basic digital instrumentation.
+
+It is ideal for buyers looking for a budget-friendly car with SUV-like looks, decent features, and good fuel efficiency.`,
+
+    images:[
+        "Img2/kwid1.jpg",
+        "Img2/kwid2.jpg",
+        "Img2/kwid3.jpg",
+        "Img2/kwid4.jpg"
+    ],
+
+    specs:{
+        "Engine Type":"0.8L / 1.0L Petrol",
+        "Displacement":"799 cc / 999 cc",
+        "No. of Cylinders":"3",
+        "Max Power":"54 PS / 68 PS",
+        "Max Torque":"72 Nm / 91 Nm",
+        "Transmission":"5MT / AMT",
+        "Drive Type":"FWD",
+        "Fuel Type":"Petrol",
+        "Mileage":"22.3 km/l",
+        "Top Speed":"~150 km/h",
+        "Fuel Tank Capacity":"28 Litres",
+        "Length":"3731 mm",
+        "Width":"1579 mm",
+        "Height":"1474 mm",
+        "Wheelbase":"2422 mm",
+        "Ground Clearance":"184 mm",
+        "Boot Space":"279 Litres",
+        "Kerb Weight":"~760 kg",
+        "Brakes":"Disc (Front) / Drum (Rear)",
+        "Airbags":"2 (Standard)"
+    },
+
+    variants:[
+        { name:"RXE", price:"₹4.70 Lakh", details:"Base variant" },
+        { name:"RXL", price:"₹5.30 Lakh", details:"Adds infotainment" },
+        { name:"RXT", price:"₹5.90 Lakh", details:"More features" },
+        { name:"Climber", price:"₹6.45 Lakh", details:"Top variant with styling upgrades" }
+    ],
+
+    pros:[
+        "Affordable pricing",
+        "SUV-like styling and high ground clearance",
+        "Good fuel efficiency",
+        "Touchscreen infotainment available",
+        "Easy to drive in city"
+    ],
+
+    cons:[
+        "Build quality is average",
+        "Low power compared to rivals",
+        "Not suitable for highways",
+        "Basic interior quality"
+    ]
+},
+
+meridian:{
+    name:"Jeep Meridian",
+    price:"₹29.90 – ₹38.61 Lakh (ex-showroom)",
+    engine:"2.0L Multijet II Diesel",
+    mileage:"14 – 16 km/l",
+    type:"SUV",
+
+    overview:`The Jeep Meridian is a premium 7-seater SUV positioned above the Compass, offering more space, comfort, and practicality while retaining Jeep’s core strengths of build quality and driving dynamics.
+
+It is powered by a 2.0L diesel engine that delivers strong torque and stable highway performance. The engine is refined for long-distance cruising, making it suitable for touring and family travel.
+
+The Meridian stands out for its premium interior, featuring a large touchscreen infotainment system, digital cluster, panoramic sunroof, ventilated seats, and multiple safety features.
+
+It also offers a 4x4 variant (in select trims), making it capable of light off-road usage along with strong highway stability.
+
+It is ideal for buyers looking for a premium, spacious, and comfortable 7-seater SUV with strong build quality.`,
+
+    images:[
+        "Img2/meridian1.jpg",
+        "Img2/meridian2.jpg",
+        "Img2/meridian3.jpg",
+        "Img2/meridian4.jpg"
+    ],
+
+    specs:{
+        "Engine Type":"2.0L Multijet II Diesel",
+        "Displacement":"1956 cc",
+        "No. of Cylinders":"4",
+        "Max Power":"170 PS",
+        "Max Torque":"350 Nm",
+        "Transmission":"6MT / 9AT",
+        "Drive Type":"FWD / AWD",
+        "Fuel Type":"Diesel",
+        "Mileage":"15 km/l",
+        "Top Speed":"~190 km/h",
+        "Fuel Tank Capacity":"60 Litres",
+        "Length":"4769 mm",
+        "Width":"1859 mm",
+        "Height":"1698 mm",
+        "Wheelbase":"2782 mm",
+        "Ground Clearance":"203 mm",
+        "Boot Space":"170 – 824 Litres (flex seating)",
+        "Suspension":"Independent Front & Rear",
+        "Brakes":"Disc (All Wheels)",
+        "Seating Capacity":"6 / 7 Seater",
+        "4x4":"Available (Select variants)"
+    },
+
+    variants:[
+        { name:"Limited", price:"₹29.90 Lakh", details:"Base variant with essential features" },
+        { name:"Longitude Plus", price:"₹33 Lakh", details:"Adds comfort and infotainment upgrades" },
+        { name:"Limited (O)", price:"₹35 Lakh", details:"More premium features" },
+        { name:"Overland", price:"₹38.61 Lakh", details:"Top variant with luxury features" }
+    ],
+
+    pros:[
+        "Strong build quality",
+        "Comfortable 7-seater layout",
+        "Powerful diesel engine",
+        "Premium cabin experience",
+        "Stable highway performance"
+    ],
+
+    cons:[
+        "Expensive pricing",
+        "Fuel efficiency is average",
+        "Third row is best for kids",
+        "Maintenance cost is high"
+    ]
+},
+
+ertiga:{
+    name:"Maruti Suzuki Ertiga",
+    price:"₹8.69 – ₹13.03 Lakh (ex-showroom)",
+    engine:"1.5L K15C Smart Hybrid Petrol",
+    mileage:"20.3 km/l (Petrol) / 26.1 km/kg (CNG)",
+    type:"MPV",
+
+    overview:`The Maruti Ertiga is India’s most popular 7-seater MPV, known for its practicality, fuel efficiency, and affordability. It is widely used by families and fleet operators due to its low running cost and reliability.
+
+The 1.5L petrol engine with mild-hybrid technology offers smooth performance, while the CNG variant is extremely fuel-efficient, making it ideal for high-usage buyers.
+
+The cabin is spacious with flexible seating, allowing easy configuration between passengers and luggage. Comfort is prioritized over performance.
+
+It is best suited for families looking for an affordable, fuel-efficient, and practical 7-seater vehicle.`,
+
+    images:[
+        "Img2/ertiga1.jpg",
+        "Img2/ertiga2.jpg",
+        "Img2/ertiga3.jpg",
+        "Img2/ertiga4.jpg"
+    ],
+
+    specs:{
+        "Engine Type":"1.5L K15C Smart Hybrid",
+        "Displacement":"1462 cc",
+        "No. of Cylinders":"4",
+        "Max Power":"103 PS",
+        "Max Torque":"137 Nm",
+        "Transmission":"5MT / 6AT",
+        "Drive Type":"FWD",
+        "Fuel Type":"Petrol / CNG",
+        "Mileage":"20.3 km/l (Petrol)",
+        "CNG Mileage":"26.1 km/kg",
+        "Fuel Tank Capacity":"45 Litres (Petrol)",
+        "Length":"4395 mm",
+        "Width":"1735 mm",
+        "Height":"1690 mm",
+        "Wheelbase":"2740 mm",
+        "Ground Clearance":"185 mm",
+        "Boot Space":"209 – 803 Litres",
+        "Seating Capacity":"7 Seater",
+        "Suspension":"MacPherson Strut / Torsion Beam",
+        "Brakes":"Disc (Front) / Drum (Rear)"
+    },
+
+    variants:[
+        { name:"LXi", price:"₹8.69 Lakh", details:"Base variant" },
+        { name:"VXi", price:"₹10.10 Lakh", details:"Adds infotainment" },
+        { name:"ZXi", price:"₹11.20 Lakh", details:"More comfort features" },
+        { name:"ZXi+", price:"₹13.03 Lakh", details:"Top variant with all features" }
+    ],
+
+    pros:[
+        "Excellent fuel efficiency (especially CNG)",
+        "Spacious 7-seater layout",
+        "Low maintenance cost",
+        "Easy to drive in city",
+        "Strong resale value"
+    ],
+
+    cons:[
+        "Not very powerful engine",
+        "Basic interior quality",
+        "High-speed stability is average",
+        "Limited premium features"
+    ]
+},
+
+alcazar:{
+    name:"Hyundai Alcazar",
+    price:"₹16.77 – ₹21.28 Lakh (ex-showroom)",
+    engine:"1.5L Turbo Petrol / 1.5L Diesel",
+    mileage:"17 – 20.4 km/l",
+    type:"SUV",
+
+    overview:`The Hyundai Alcazar is a premium 6- and 7-seater SUV based on the Creta platform, offering more space, comfort, and family-oriented features.
+
+It is available with both petrol and diesel engines, where the diesel variant is preferred for long-distance travel due to its efficiency and torque.
+
+The cabin is well-equipped with features like ventilated seats, panoramic sunroof, dual-zone climate control, digital cluster, and advanced infotainment system.
+
+It is positioned as a comfortable family SUV with premium features and smooth driving dynamics, suitable for both city and highway use.`,
+
+    images:[
+        "Img2/alcazar1.jpg",
+        "Img2/alcazar2.jpg",
+        "Img2/alcazar3.jpg",
+        "Img2/alcazar4.jpg"
+    ],
+
+    specs:{
+        "Engine Type":"1.5L Turbo Petrol / Diesel",
+        "Displacement":"1482 cc / 1493 cc",
+        "No. of Cylinders":"4",
+        "Max Power":"160 PS (Petrol) / 116 PS (Diesel)",
+        "Max Torque":"253 Nm / 250 Nm",
+        "Transmission":"6MT / 6AT",
+        "Drive Type":"FWD",
+        "Fuel Type":"Petrol / Diesel",
+        "Mileage":"20.4 km/l (Diesel)",
+        "Fuel Tank Capacity":"50 Litres",
+        "Length":"4500 mm",
+        "Width":"1790 mm",
+        "Height":"1675 mm",
+        "Wheelbase":"2760 mm",
+        "Ground Clearance":"200 mm",
+        "Boot Space":"180 – 579 Litres",
+        "Seating Capacity":"6 / 7 Seater",
+        "Suspension":"MacPherson Strut / Torsion Beam",
+        "Brakes":"Disc (All Wheels)",
+        "ADAS":"Level 2 (Select variants)"
+    },
+
+    variants:[
+        { name:"Executive", price:"₹16.77 Lakh", details:"Base variant" },
+        { name:"Prestige", price:"₹18.5 Lakh", details:"Adds comfort features" },
+        { name:"Platinum", price:"₹20 Lakh", details:"Premium features and tech" },
+        { name:"Signature", price:"₹21.28 Lakh", details:"Top variant with all features" }
+    ],
+
+    pros:[
+        "Premium and comfortable cabin",
+        "Good feature list",
+        "Spacious for 6/7 passengers",
+        "Refined diesel engine",
+        "Smooth ride quality"
+    ],
+
+    cons:[
+        "No AWD option",
+        "Not very powerful petrol engine",
+        "Third row is tight for adults",
+        "Price close to bigger SUVs"
+    ]
+},
+
+tigor:{
+    name:"Tata Tigor",
+    price:"₹6.30 – ₹9.55 Lakh (ex-showroom)",
+    engine:"1.2L Revotron Petrol",
+    mileage:"19 – 20.3 km/l",
+    type:"Sedan",
+
+    overview:`The Tata Tigor is a compact sedan built on the Tiago platform, offering a balance of style, practicality, and affordability. It is one of the safest sedans in its segment with a 4-star Global NCAP rating.
+
+The 1.2L Revotron petrol engine is tuned for city-friendly performance with smooth power delivery. While not performance-focused, it is efficient and reliable for daily commuting.
+
+The cabin is well-designed with decent space, a touchscreen infotainment system, and digital instrument cluster in higher variants. It also offers an electric version (Tigor EV) for eco-conscious buyers.
+
+It is ideal for buyers looking for a budget-friendly, safe, and practical compact sedan.`,
+
+    images:[
+        "Img2/tigor1.jpg",
+        "Img2/tigor2.jpg",
+        "Img2/tigor3.jpg",
+        "Img2/tigor4.jpg"
+    ],
+
+    specs:{
+        "Engine Type":"1.2L Revotron Petrol",
+        "Displacement":"1199 cc",
+        "No. of Cylinders":"3",
+        "Max Power":"86 PS @ 6000 rpm",
+        "Max Torque":"113 Nm @ 3300 rpm",
+        "Transmission":"5MT / AMT",
+        "Drive Type":"FWD",
+        "Fuel Type":"Petrol / CNG",
+        "Mileage":"19.6 km/l (Petrol)",
+        "Fuel Tank Capacity":"35 Litres",
+        "Length":"3993 mm",
+        "Width":"1677 mm",
+        "Height":"1532 mm",
+        "Wheelbase":"2450 mm",
+        "Ground Clearance":"170 mm",
+        "Boot Space":"419 Litres",
+        "Kerb Weight":"~990 kg",
+        "Brakes":"Disc (Front) / Drum (Rear)",
+        "Safety":"4-Star (Global NCAP)"
+    },
+
+    variants:[
+        { name:"XE", price:"₹6.30 Lakh", details:"Base variant" },
+        { name:"XM", price:"₹7.10 Lakh", details:"Adds infotainment" },
+        { name:"XZ", price:"₹8.20 Lakh", details:"Mid variant with features" },
+        { name:"XZ+ Dual Tone", price:"₹9.55 Lakh", details:"Top variant with premium styling" }
+    ],
+
+    pros:[
+        "Strong safety rating",
+        "Good boot space",
+        "Affordable pricing",
+        "Comfortable ride quality",
+        "CNG option available"
+    ],
+
+    cons:[
+        "Engine is not very powerful",
+        "Rear seat space is average",
+        "AMT gearbox is basic",
+        "Interior feels simple"
+    ]
+},
+
+sonet:{
+    name:"Kia Sonet",
+    price:"₹7.99 – ₹15.75 Lakh (ex-showroom)",
+    engine:"1.2L Petrol / 1.0L Turbo Petrol / 1.5L Diesel",
+    mileage:"18 – 24 km/l",
+    type:"SUV",
+
+    overview:`The Kia Sonet is a compact SUV known for its bold styling, premium features, and wide engine options. It is one of the most feature-loaded cars in its segment.
+
+It offers three engine choices: a 1.2L petrol for efficiency, a 1.0L turbo petrol for performance, and a 1.5L diesel for long-distance economy.
+
+The interior is modern and tech-focused, featuring a large touchscreen infotainment system, ventilated seats, Bose sound system, and connected car technology.
+
+It is ideal for buyers looking for a stylish, feature-rich compact SUV with multiple engine options.`,
+
+    images:[
+        "Img2/sonet1.jpg",
+        "Img2/sonet2.jpg",
+        "Img2/sonet3.jpg",
+        "Img2/sonet4.jpg"
+    ],
+
+    specs:{
+        "Engine Type":"1.2L / 1.0L Turbo / 1.5L Diesel",
+        "Displacement":"1197 cc / 998 cc / 1493 cc",
+        "No. of Cylinders":"3 / 4",
+        "Max Power":"83 PS / 120 PS / 116 PS",
+        "Max Torque":"115 Nm / 172 Nm / 250 Nm",
+        "Transmission":"5MT / 6MT / iMT / 7DCT / 6AT",
+        "Drive Type":"FWD",
+        "Fuel Type":"Petrol / Diesel",
+        "Mileage":"24 km/l (Diesel)",
+        "Fuel Tank Capacity":"45 Litres",
+        "Length":"3995 mm",
+        "Width":"1790 mm",
+        "Height":"1642 mm",
+        "Wheelbase":"2500 mm",
+        "Ground Clearance":"205 mm",
+        "Boot Space":"392 Litres",
+        "Suspension":"MacPherson Strut / Torsion Beam",
+        "Brakes":"Disc (Front) / Drum (Rear)"
+    },
+
+    variants:[
+        { name:"HTE", price:"₹7.99 Lakh", details:"Base variant" },
+        { name:"HTK", price:"₹9.5 Lakh", details:"Adds infotainment features" },
+        { name:"HTX", price:"₹11.5 Lakh", details:"Mid variant with premium features" },
+        { name:"GTX+", price:"₹14 Lakh", details:"Turbo variant with sporty features" },
+        { name:"X-Line", price:"₹15.75 Lakh", details:"Top variant with full features" }
+    ],
+
+    pros:[
+        "Very feature-rich cabin",
+        "Multiple engine options",
+        "Strong diesel efficiency",
+        "Bold design",
+        "Good safety features"
+    ],
+
+    cons:[
+        "Rear seat space is tight",
+        "Top variants are expensive",
+        "Ride is slightly firm",
+        "Diesel only in higher trims"
+    ]
+},
+
+triber:{
+    name:"Renault Triber",
+    price:"₹6.10 – ₹8.97 Lakh (ex-showroom)",
+    engine:"1.0L SCe Petrol",
+    mileage:"18 – 20 km/l",
+    type:"MPV",
+
+    overview:`The Renault Triber is a compact 7-seater MPV designed for maximum practicality at an affordable price. It is unique in its segment for offering modular seating flexibility.
+
+The 1.0L engine is tuned for city driving and economy rather than performance. It is best suited for relaxed urban commuting.
+
+The biggest strength of the Triber is its flexibility — seats can be removed or adjusted to increase boot space or passenger capacity.
+
+It is ideal for budget-conscious families needing a flexible 7-seater with low running cost.`,
+
+    images:[
+        "Img2/triber1.jpg",
+        "Img2/triber2.jpg",
+        "Img2/triber3.jpg",
+        "Img2/triber4.jpg"
+    ],
+
+    specs:{
+        "Engine Type":"1.0L SCe Petrol",
+        "Displacement":"999 cc",
+        "No. of Cylinders":"3",
+        "Max Power":"72 PS @ 6250 rpm",
+        "Max Torque":"96 Nm @ 3500 rpm",
+        "Transmission":"5MT / AMT",
+        "Drive Type":"FWD",
+        "Fuel Type":"Petrol",
+        "Mileage":"19 km/l",
+        "Fuel Tank Capacity":"40 Litres",
+        "Length":"3990 mm",
+        "Width":"1739 mm",
+        "Height":"1643 mm",
+        "Wheelbase":"2636 mm",
+        "Ground Clearance":"182 mm",
+        "Boot Space":"84 – 625 Litres (flex seating)",
+        "Seating Capacity":"7 Seater (modular)",
+        "Suspension":"MacPherson Strut / Torsion Beam",
+        "Brakes":"Disc (Front) / Drum (Rear)"
+    },
+
+    variants:[
+        { name:"RXE", price:"₹6.10 Lakh", details:"Base variant" },
+        { name:"RXL", price:"₹6.80 Lakh", details:"Adds basic features" },
+        { name:"RXT", price:"₹7.60 Lakh", details:"Mid variant with infotainment" },
+        { name:"RXZ", price:"₹8.97 Lakh", details:"Top variant with full features" }
+    ],
+
+    pros:[
+        "Very affordable 7-seater",
+        "Highly flexible seating",
+        "Good fuel efficiency",
+        "Compact size for city use",
+        "Practical interior layout"
+    ],
+
+    cons:[
+        "Engine is underpowered",
+        "Not suitable for highways with full load",
+        "Interior quality is basic",
+        "Limited safety features"
+    ]
+},
+
+innova:{
+    name:"Toyota Innova Crysta",
+    price:"₹19.99 – ₹26.55 Lakh (ex-showroom)",
+    engine:"2.4L Diesel / 2.7L Petrol",
+    mileage:"10 – 15 km/l",
+    type:"MPV",
+
+    overview:`The Toyota Innova Crysta is India’s most trusted premium MPV, known for unmatched reliability, comfort, and long-term durability. It has been the benchmark for family and commercial 7-seater vehicles for years.
+
+The diesel engine is the most popular choice due to its strong low-end torque, making it ideal for long highway journeys and fully loaded driving conditions. The petrol variant is smoother but less fuel-efficient.
+
+The cabin is spacious and built for comfort, with captain seat options in the middle row, rear AC vents, and durable interior materials designed for long-term usage.
+
+It is best suited for buyers who prioritize comfort, reliability, and long-distance travel capability over modern tech features.`,
+
+    images:[
+        "Img2/innova1.jpg",
+        "Img2/innova2.jpg",
+        "Img2/innova3.jpg",
+        "Img2/innova4.jpg",
+        "Img2/innova5.jpg"
+    ],
+
+    specs:{
+        "Engine Type":"2.4L Diesel / 2.7L Petrol",
+        "Displacement":"2393 cc / 2694 cc",
+        "No. of Cylinders":"4",
+        "Max Power":"150 PS (Diesel) / 166 PS (Petrol)",
+        "Max Torque":"343 Nm / 245 Nm",
+        "Transmission":"5MT / 6AT",
+        "Drive Type":"RWD",
+        "Fuel Type":"Diesel / Petrol",
+        "Mileage":"15 km/l (Diesel)",
+        "Fuel Tank Capacity":"55 Litres",
+        "Length":"4735 mm",
+        "Width":"1830 mm",
+        "Height":"1795 mm",
+        "Wheelbase":"2750 mm",
+        "Ground Clearance":"178 mm",
+        "Boot Space":"300+ Litres (flex seating)",
+        "Seating Capacity":"7 / 8 Seater",
+        "Suspension":"Double Wishbone / Multi-link",
+        "Brakes":"Disc (Front) / Drum (Rear)"
+    },
+
+    variants:[
+        { name:"GX", price:"₹19.99 Lakh", details:"Base variant" },
+        { name:"GX (O)", price:"₹21 Lakh", details:"Adds comfort features" },
+        { name:"VX", price:"₹23 Lakh", details:"Mid variant with better interiors" },
+        { name:"ZX", price:"₹26.55 Lakh", details:"Top variant with premium features" }
+    ],
+
+    pros:[
+        "Extremely reliable engine",
+        "Excellent ride comfort",
+        "Strong resale value",
+        "Spacious cabin",
+        "Low maintenance for its segment"
+    ],
+
+    cons:[
+        "Outdated interior design",
+        "Expensive compared to rivals",
+        "Basic feature list",
+        "Fuel efficiency is average"
+    ]
+},
+
+ignis:{
+    name:"Maruti Suzuki Ignis",
+    price:"₹5.84 – ₹8.12 Lakh (ex-showroom)",
+    engine:"1.2L K-Series Petrol",
+    mileage:"20 – 22 km/l",
+    type:"Hatchback",
+
+    overview:`The Maruti Suzuki Ignis is a quirky and compact hatchback designed for urban users who want something different from regular small cars. It features a unique design with SUV-inspired styling.
+
+The 1.2L petrol engine is smooth, fuel-efficient, and ideal for city driving. It is not performance-oriented but offers reliable daily usability.
+
+The cabin is compact but practical, with good visibility and a high seating position compared to traditional hatchbacks.
+
+It is best suited for young buyers and city drivers who want a stylish, compact, and easy-to-drive car.`,
+
+    images:[
+        "Img2/ignis1.jpg",
+        "Img2/ignis2.jpg",
+        "Img2/ignis3.jpg",
+        "Img2/ignis4.jpg"
+    ],
+
+    specs:{
+        "Engine Type":"1.2L K-Series Petrol",
+        "Displacement":"1197 cc",
+        "No. of Cylinders":"4",
+        "Max Power":"83 PS @ 6000 rpm",
+        "Max Torque":"113 Nm @ 4200 rpm",
+        "Transmission":"5MT / AMT",
+        "Drive Type":"FWD",
+        "Fuel Type":"Petrol",
+        "Mileage":"21 km/l",
+        "Fuel Tank Capacity":"32 Litres",
+        "Length":"3700 mm",
+        "Width":"1690 mm",
+        "Height":"1595 mm",
+        "Wheelbase":"2435 mm",
+        "Ground Clearance":"180 mm",
+        "Boot Space":"260 Litres",
+        "Seating Capacity":"5 Seater",
+        "Suspension":"MacPherson Strut / Torsion Beam",
+        "Brakes":"Disc (Front) / Drum (Rear)"
+    },
+
+    variants:[
+        { name:"Sigma", price:"₹5.84 Lakh", details:"Base variant" },
+        { name:"Delta", price:"₹6.50 Lakh", details:"Adds infotainment system" },
+        { name:"Zeta", price:"₹7.20 Lakh", details:"Mid variant with features" },
+        { name:"Alpha", price:"₹8.12 Lakh", details:"Top variant with full features" }
+    ],
+
+    pros:[
+        "Good fuel efficiency",
+        "Compact and easy to drive",
+        "High seating position",
+        "Affordable pricing",
+        "Low maintenance"
+    ],
+
+    cons:[
+        "Rear seat space is tight",
+        "Design is polarizing",
+        "Not powerful for highways",
+        "Limited boot space"
+    ]
+},
+
+safari:{
+    name:"Tata Safari",
+    price:"₹16.19 – ₹27.34 Lakh (ex-showroom)",
+    engine:"2.0L Kryotec Diesel",
+    mileage:"14 – 16 km/l",
+    type:"SUV",
+
+    overview:`The Tata Safari is a flagship 6/7-seater SUV that combines strong road presence, modern features, and solid build quality. It is based on the Harrier platform but offers extended seating capacity.
+
+The 2.0L Kryotec diesel engine delivers strong torque and highway stability, making it ideal for long-distance touring with full occupancy.
+
+The Safari stands out for its premium interior featuring a large touchscreen infotainment system, panoramic sunroof, ventilated seats, and connected car technology.
+
+It is designed for families who want a bold, spacious, and feature-loaded SUV with strong road presence.`,
+
+    images:[
+        "Img2/safari1.jpg",
+        "Img2/safari2.jpg",
+        "Img2/safari3.jpg",
+        "Img2/safari4.jpg"
+    ],
+
+    specs:{
+        "Engine Type":"2.0L Kryotec Diesel",
+        "Displacement":"1956 cc",
+        "No. of Cylinders":"4",
+        "Max Power":"170 PS @ 3750 rpm",
+        "Max Torque":"350 Nm @ 1750-2500 rpm",
+        "Transmission":"6MT / 6AT",
+        "Drive Type":"FWD",
+        "Fuel Type":"Diesel",
+        "Mileage":"15 km/l",
+        "Fuel Tank Capacity":"50 Litres",
+        "Length":"4668 mm",
+        "Width":"1922 mm",
+        "Height":"1795 mm",
+        "Wheelbase":"2741 mm",
+        "Ground Clearance":"205 mm",
+        "Boot Space":"420 Litres (5-seater mode)",
+        "Seating Capacity":"6 / 7 Seater",
+        "Suspension":"MacPherson Strut / Rear Multi-link",
+        "Brakes":"Disc (All Wheels)"
+    },
+
+    variants:[
+        { name:"XE", price:"₹16.19 Lakh", details:"Base variant" },
+        { name:"XM", price:"₹17.50 Lakh", details:"Adds infotainment features" },
+        { name:"XT", price:"₹19.50 Lakh", details:"Mid variant with comfort upgrades" },
+        { name:"XZ", price:"₹22 Lakh", details:"Premium features added" },
+        { name:"XZA+", price:"₹27.34 Lakh", details:"Top automatic variant" }
+    ],
+
+    pros:[
+        "Strong road presence",
+        "Premium interior feel",
+        "Comfortable for long drives",
+        "Good safety features",
+        "Spacious cabin"
+    ],
+
+    cons:[
+        "Heavy steering in city",
+        "Fuel efficiency is average",
+        "Third row is tight for adults",
+        "High pricing for top variants"
+    ]
+},
+
+tiagoEv:{
+    name:"Tata Tiago EV",
+    price:"₹7.99 – ₹11.89 Lakh (ex-showroom)",
+    engine:"Electric Motor (PMSM)",
+    mileage:"250 – 315 km (ARAI range)",
+    type:"Electric Hatchback",
+
+    overview:`The Tata Tiago EV is India’s most affordable electric hatchback, designed for budget-friendly EV adoption. It is based on the regular Tiago but fully electrified for urban mobility.
+
+The electric motor delivers instant torque, making it smooth and responsive in city traffic. It is available in two battery options (Medium Range and Long Range), catering to different driving needs.
+
+The cabin is simple yet functional, offering a touchscreen infotainment system, digital cluster, automatic climate control, and connected car features in higher variants.
+
+It is ideal for first-time EV buyers looking for an economical, easy-to-drive, and low-running-cost city car.`,
+
+    images:[
+        "Img2/tiago_ev1.jpg",
+        "Img2/tiago_ev2.jpg",
+        "Img2/tiago_ev3.jpg",
+        "Img2/tiago_ev4.jpg"
+    ],
+
+    specs:{
+        "Motor Type":"Permanent Magnet Synchronous Motor",
+        "Battery Capacity":"19.2 kWh / 24 kWh",
+        "Max Power":"61 PS / 75 PS",
+        "Max Torque":"110 Nm",
+        "Transmission":"Single Speed Automatic",
+        "Drive Type":"FWD",
+        "Fuel Type":"Electric",
+        "Range":"250 km / 315 km",
+        "Charging Time (DC Fast)":"~57 min (10–80%)",
+        "Charging Time (AC)":"3.6 – 8.7 hours",
+        "Top Speed":"~120 km/h",
+        "Boot Space":"240 Litres",
+        "Seating Capacity":"5 Seater",
+        "Ground Clearance":"170 mm",
+        "Safety":"4-Star (Tiago ICE platform)"
+    },
+
+    variants:[
+        { name:"XE MR", price:"₹7.99 Lakh", details:"Base EV variant" },
+        { name:"XT MR", price:"₹8.99 Lakh", details:"Adds infotainment features" },
+        { name:"XZ+ LR", price:"₹10.99 Lakh", details:"Long range variant" },
+        { name:"XZ+ Tech Lux", price:"₹11.89 Lakh", details:"Top variant with full features" }
+    ],
+
+    pros:[
+        "Most affordable EV in India",
+        "Good real-world range",
+        "Low running cost",
+        "Easy city driving",
+        "Tata EV safety support"
+    ],
+
+    cons:[
+        "Not suitable for highways long distance",
+        "Rear space is average",
+        "Charging dependency",
+        "Basic performance"
+    ]
+},
+
+punchEv:{
+    name:"Tata Punch EV",
+    price:"₹10.99 – ₹15.49 Lakh (ex-showroom)",
+    engine:"Electric Motor (PMSM)",
+    mileage:"315 – 421 km (ARAI range)",
+    type:"Electric Micro SUV",
+
+    overview:`The Tata Punch EV is a compact electric SUV based on Tata’s new Acti.ev architecture. It combines SUV styling with electric mobility, making it one of the most practical EVs in its segment.
+
+It offers two battery packs (Standard Range and Long Range), with strong city performance and usable highway capability.
+
+The cabin is modern with a large touchscreen, digital instrument cluster, ventilated seats, sunroof, and advanced connected features.
+
+It is ideal for buyers wanting a compact SUV feel with electric efficiency and modern tech.`,
+
+    images:[
+        "Img2/punch_ev1.jpg",
+        "Img2/punch_ev2.jpg",
+        "Img2/punch_ev3.jpg",
+        "Img2/punch_ev4.jpg"
+    ],
+
+    specs:{
+        "Platform":"Acti.ev (Gen 2 EV platform)",
+        "Battery Capacity":"25 kWh / 35 kWh",
+        "Max Power":"82 PS / 122 PS",
+        "Max Torque":"114 Nm / 190 Nm",
+        "Transmission":"Single Speed Automatic",
+        "Drive Type":"FWD",
+        "Fuel Type":"Electric",
+        "Range":"315 km / 421 km",
+        "Charging Time (DC Fast)":"~56 min (10–80%)",
+        "Charging Time (AC)":"4 – 9 hours",
+        "Top Speed":"~140 km/h",
+        "Boot Space":"366 Litres",
+        "Ground Clearance":"190 mm",
+        "Seating Capacity":"5 Seater",
+        "Safety":"5-Star Expected (Tata EV platform)"
+    },
+
+    variants:[
+        { name:"Smart", price:"₹10.99 Lakh", details:"Base EV variant" },
+        { name:"Adventure", price:"₹12.49 Lakh", details:"Adds features" },
+        { name:"Empowered", price:"₹13.99 Lakh", details:"Mid variant with tech upgrades" },
+        { name:"Empowered+ LR", price:"₹15.49 Lakh", details:"Top long range variant" }
+    ],
+
+    pros:[
+        "SUV stance in compact size",
+        "Strong EV range",
+        "Modern features list",
+        "Good safety focus",
+        "Comfortable city drive"
+    ],
+
+    cons:[
+        "Rear seat space is tight for tall passengers",
+        "Charging network dependency",
+        "High pricing vs petrol Punch",
+        "Not a performance EV"
+    ]
+},
+
+xuv400Ev:{
+    name:"Mahindra XUV400 EV",
+    price:"₹15.49 – ₹19.39 Lakh (ex-showroom)",
+    engine:"Electric Motor (PMSM)",
+    mileage:"375 – 456 km (ARAI range)",
+    type:"Electric SUV",
+
+    overview:`The Mahindra XUV400 EV is an electric SUV based on the XUV300 platform, offering one of the fastest acceleration figures in its segment.
+
+It features a powerful electric motor that delivers strong torque instantly, making it one of the quickest EVs under ₹20 lakh.
+
+The cabin is spacious with a large infotainment system, dual-zone climate control, sunroof, and multiple drive modes.
+
+It is best suited for buyers looking for a powerful, long-range electric SUV with strong performance.`,
+
+    images:[
+        "Img2/xuv400_ev1.jpg",
+        "Img2/xuv400_ev2.jpg",
+        "Img2/xuv400_ev3.jpg",
+        "Img2/xuv400_ev4.jpg"
+    ],
+
+    specs:{
+        "Motor Type":"Permanent Magnet Synchronous Motor",
+        "Battery Capacity":"34.5 kWh / 39.4 kWh",
+        "Max Power":"150 PS",
+        "Max Torque":"310 Nm",
+        "Transmission":"Single Speed Automatic",
+        "Drive Type":"FWD",
+        "Fuel Type":"Electric",
+        "Range":"375 km / 456 km",
+        "Charging Time (DC Fast)":"~50 min (0–80%)",
+        "Charging Time (AC)":"6 – 13 hours",
+        "Top Speed":"150 km/h",
+        "Boot Space":"378 Litres",
+        "Ground Clearance":"190 mm",
+        "Seating Capacity":"5 Seater",
+        "Acceleration":"0–100 km/h in ~8.3 sec"
+    },
+
+    variants:[
+        { name:"EC Pro", price:"₹15.49 Lakh", details:"Base EV variant" },
+        { name:"EL Pro", price:"₹17.49 Lakh", details:"Mid range variant" },
+        { name:"EL Fast Charger", price:"₹18.99 Lakh", details:"Fast charging support" },
+        { name:"EL Luxury", price:"₹19.39 Lakh", details:"Top variant with full features" }
+    ],
+
+    pros:[
+        "Very strong acceleration",
+        "Good real-world range",
+        "Spacious SUV cabin",
+        "Stable highway performance",
+        "Strong build quality"
+    ],
+
+    cons:[
+        "Design feels dated (ICE-based platform)",
+        "No AWD option",
+        "Charging time still required",
+        "Limited premium feel vs rivals"
+    ]
+},
+};
+
+// -------- DEFAULTS --------
+Object.keys(cars).forEach(key => {
+    let c = cars[key];
+
+    if (!c.images?.length) c.images = ["Img2/default1.jpg"];
+
+    if (!c.rating) {
+        c.rating = (Math.random() * 1 + 4).toFixed(1);
+        c.reviews = Math.floor(Math.random() * 2000) + 200;
+    }
+
+    if (!c.variants?.length) {
+        c.variants = [
+            { name: "Base", price: c.price },
+            { name: "Mid", price: c.price },
+            { name: "Top", price: c.price }
+        ];
+    }
+
+    if (!c.pros) c.pros = ["Good performance", "Comfortable ride", "Value for money"];
+    if (!c.cons) c.cons = ["Average mileage", "Basic features", "Service cost can vary"];
+});
+
+// -------- SETUP --------
+const selectedCar = cars?.[carParam];
+
+if (!selectedCar) {
+    document.body.innerHTML = "<h2 style='color:white;text-align:center;margin-top:50px;'>Car not found</h2>";
+    throw new Error("Invalid or missing car parameter");
+}
+
+// -------- CACHE DOM --------
+const img = document.getElementById("car-img");
+const thumbContainer = document.getElementById("thumbnails");
+
+img.decoding = "async";
+img.loading = "eager";
+
+const carNameEl = document.getElementById("car-name");
+const priceEl = document.getElementById("price");
+const engineEl = document.getElementById("engine");
+const mileageEl = document.getElementById("mileage");
+const typeEl = document.getElementById("type");
+const overviewEl = document.getElementById("overview-text");
+const ratingEl = document.getElementById("rating");
+
+const specTable = document.getElementById("spec-table");
+const variantListEl = document.getElementById("variant-list");
+const prosEl = document.getElementById("pros");
+const consEl = document.getElementById("cons");
+
+document.querySelectorAll(".tab").forEach(tab => {
+    tab.addEventListener("click", () => {
+        showTab(tab.dataset.tab);
+    });
+});
+
+// -------- IMAGE SLIDER --------
+let currentIndex = 0;
+const currentImages = selectedCar.images;
+
+let imageTimer = null;
+let thumbnailImgs = [];
+
+function showImage(index) {
+    currentIndex = (index + currentImages.length) % currentImages.length;
+
+    if (imageTimer) clearTimeout(imageTimer);
+
+    img.style.opacity = 0;
+
+    const newSrc = currentImages[currentIndex];
+
+    // preload
+    new Image().src = newSrc;
+
+    const startTime = Date.now();
+
+    imageTimer = setTimeout(() => {
+
+        img.onload = () => {
+            const elapsed = Date.now() - startTime;
+            const remaining = Math.max(0, 120 - elapsed);
+
+            setTimeout(() => {
+                requestAnimationFrame(() => {
+                    img.style.opacity = 1;
+                });
+            }, remaining);
+        };
+
+        // handle cached image case
+        if (img.src !== newSrc) {
+            img.src = newSrc;
+        } else {
+            img.style.opacity = 1;
+        }
+
+    }, 120);
+
+    // update thumbnails (cached)
+    thumbnailImgs.forEach((thumb, i) => {
+        thumb.classList.toggle("active", i === currentIndex);
+    });
+}
+
+function nextImage() { showImage(currentIndex + 1); }
+function prevImage() { showImage(currentIndex - 1); }
+
+window.showImage = showImage;
+window.nextImage = nextImage;
+window.prevImage = prevImage;
+
+// -------- BASIC INFO --------
+carNameEl.innerText = selectedCar.name;
+priceEl.innerText = selectedCar.price;
+engineEl.innerText = "Engine: " + selectedCar.engine;
+mileageEl.innerText = "Mileage: " + selectedCar.mileage;
+typeEl.innerText = selectedCar.type;
+overviewEl.innerText = selectedCar.overview;
+
+ratingEl.innerHTML = `⭐ ${selectedCar.rating} (${selectedCar.reviews} reviews)`;
+
+// -------- THUMBNAILS --------
+thumbContainer.innerHTML = "";
+thumbnailImgs = [];
+
+currentImages.forEach((src, i) => {
+    const t = document.createElement("img");
+    t.src = src;
+    t.onclick = () => showImage(i);
+    thumbContainer.appendChild(t);
+    thumbnailImgs.push(t);
+});
+
+showImage(0);
+
+// -------- SPECS --------
+let specHTML = "";
+for (let key in selectedCar.specs) {
+    specHTML += `
+        <tr>
+            <td style="padding:12px 10px; border-bottom:1px solid rgba(255,255,255,0.06); color:#d1d5db;">
+                ${key}
+            </td>
+            <td style="padding:12px 10px; border-bottom:1px solid rgba(255,255,255,0.06); color:#ffffff;">
+                ${selectedCar.specs[key]}
+            </td>
+        </tr>
+    `;
+}
+specTable.innerHTML = specHTML;
+
+// -------- VARIANTS --------
+variantListEl.innerHTML = "";
+selectedCar.variants.forEach(v => {
+    const li = document.createElement("li");
+    li.style.padding = "12px 0";
+    li.style.borderBottom = "1px solid rgba(255,255,255,0.06)";
+    li.innerHTML = `<b>${v.name}</b> - ${v.price}<br>
+        <small style="color:#9ca3af;">${v.details || ""}</small>`;
+    variantListEl.appendChild(li);
+});
+
+// -------- PROS / CONS --------
+prosEl.innerHTML = "";
+selectedCar.pros.forEach(p => {
+    const li = document.createElement("li");
+    li.textContent = "✔ " + p;
+    prosEl.appendChild(li);
+});
+
+consEl.innerHTML = "";
+selectedCar.cons.forEach(c => {
+    const li = document.createElement("li");
+    li.textContent = "✖ " + c;
+    consEl.appendChild(li);
+});
+
+function calculateEMI() {
+    let P = parseFloat(document.getElementById("loanAmount").value);
+    let R = parseFloat(document.getElementById("interestRate").value) / 12 / 100;
+    let N = parseFloat(document.getElementById("tenure").value) * 12;
+
+    if (!P || !R || !N) {
+        alert("Please fill all fields correctly");
+        return;
+    }
+
+    let emi = (P * R * Math.pow(1 + R, N)) / (Math.pow(1 + R, N) - 1);
+
+    document.getElementById("emiOutput").innerText =
+        "₹" + emi.toFixed(0);
+}
+
+function resetEMI() {
+    document.getElementById("loanAmount").value = "";
+    document.getElementById("interestRate").value = "";
+    document.getElementById("tenure").value = "";
+
+    document.getElementById("emiOutput").innerText = "₹0";
+}
+
+</script>
+
+<div class="bottom-links">
+
+    <a href="index.html" class="glass-link">Back To Home </a>
+
+    <a href="2.html" class="glass-link"> Browse More Cars </a>
+
+</div>
+
+</body>
+
+</html>

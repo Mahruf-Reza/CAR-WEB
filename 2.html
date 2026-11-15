@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Car Browse</title>
+
+    
+<style>
+/* BASE */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Lato", sans-serif;
+}
+
+body {
+    background-color: rgba(20, 20, 40, 0.692);
+}
+
+/* NAVBAR */
+.navbar {
+    background: rgba(17, 17, 17, 0.95);
+    backdrop-filter: blur(10px);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px 50px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-radius: 10px;
+    box-shadow: 0 6px 25px rgba(0,0,0,0.35);
+}
+
+/* LOGO */
+.logo {
+    font-size: 32px;
+    font-weight: 800;
+    background: linear-gradient(90deg, #ff3c00, #fbff00ea, #11ccbc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+}
+
+/* NAV LINKS */
+.nav-links a {
+    display: inline-block;
+    color: white;
+    text-decoration: none;
+    margin: 0 25px;
+    font-weight: 800;
+    font-size: 21px;
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-family: 'Poppins', sans-serif;
+    transition: transform 0.3s ease, color 0.3s ease, background 0.3s ease;
+    will-change: transform;
+}
+
+.nav-links a:hover {
+    color: #ff3c00;
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.1);
+}
+
+/* SEARCH */
+.search-box input {
+    width: 220px;
+    padding: 10px 18px;
+    border-radius: 25px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    font-family: 'Poppins', sans-serif;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.search-box input:focus {
+    box-shadow: 0 0 8px #ff3c00, 0 4px 15px rgba(0,0,0,0.3);
+    transform: scale(1.05);
+}
+
+/* FILTERS */
+.filters {
+    display: flex;
+    justify-content: center;
+    gap: 80px;
+    flex-wrap: wrap;
+    height: 105px;
+    padding: 20px;
+    margin: 20px;
+    background: rgba(255, 255, 255, 0.747);
+    backdrop-filter: blur(15px);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.788);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+}
+
+.filters select {
+    padding: 10px;
+    margin: 10px;
+    border-radius: 8px;
+    border: none;
+    background: #222222d7;
+    color: white;
+}
+
+.filter-box {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 145px;
+}
+
+.filter-box label {
+    font-size: 18px;
+    font-weight: 600;
+    color: #ff3c00;
+    margin-left: 15px;
+}
+
+/* RESET BUTTON */
+#resetBtn {
+    align-self: center;
+    margin-top: 20px;
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: none;
+    background: #ff3c00;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+#resetBtn:hover {
+    background: #d43f11;
+    transform: scale(1.05);
+}
+
+/* GRID */
+.car-container {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    justify-content: space-between;
+    gap: 15px;
+    padding: 20px 30px;
+}
+
+/* CAR CARD */
+.car-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    will-change: transform;
+}
+
+.car-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+    z-index: 5;
+}
+
+/* IMAGE */
+.car-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: contain;
+    object-position: center;
+    transform: scale(1.1);
+    transition: transform 0.4s ease;
+    display: block;
+}
+
+.car-card:hover img {
+    transform: scale(1.25);
+}
+
+/* INFO */
+.car-info {
+    padding: 15px;
+    border-top: 3px solid rgba(20, 20, 40, 0.692);
+}
+
+.price {
+    color: #ff3c00;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.specs {
+    font-size: 14px;
+    color: rgba(10, 10, 10, 0.6);
+    margin-top: 5px;
+    font-weight: 600;
+}
+
+/* FOOTER */
+footer {
+    text-align: center;
+    padding: 25px 20px;
+    background: linear-gradient(135deg, #111, #333);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    box-shadow: 0 -5px 15px rgba(0,0,0,0.3);
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+footer a {
+    color: #ff3c00;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+footer a:hover {
+    color: #ffa500;
+    text-decoration: underline;
+}
+</style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <div class="logo">Spec Reign</div>
+
+        <div class="nav-links">
+            <a href="index.html">HOME</a>
+            <a href="#">BROWSE</a>
+            <a href="#">COMPARE</a>
+            <a href="#">CONTACT</a>
+        </div>
+
+        <div class="search-box">
+            <input type="text" placeholder="Search cars...">
+        </div>
+    </div>
+
+
+    <!-- FILTERS -->
+    <div class="filters">
+
+    <div class="filter-box">
+        <label>Category:</label>
+        <select>
+            <option value="">All</option>
+            <option value="hatchback">Hatchback</option>
+            <option value="suv">SUV</option>
+            <option value="sedan">Sedan</option>
+            <option value="mpv">MPV</option>
+        </select>
+    </div>
+
+    <div class="filter-box">
+        <label>Brand:</label>
+        <select>
+            <option value="">All</option>
+            <option value="maruti">Maruti</option>
+            <option value="tata">Tata</option>
+            <option value="hyundai">Hyundai</option>
+            <option value="mahindra">Mahindra</option>
+            <option value="toyota">Toyota</option>
+            <option value="kia">Kia</option>
+            <option value="honda">Honda</option>
+            <option value="renault">Renault</option>
+            <option value="jeep">Jeep</option>
+        </select>
+    </div>
+
+    <div class="filter-box">
+        <label>Fuel Type:</label>
+        <select>
+            <option value="">All</option>
+            <option value="petrol">Petrol</option>
+            <option value="diesel">Diesel</option>
+            <option value="electric">Electric</option>
+        </select>
+    </div>
+
+         <button id="resetBtn">Reset</button>
+
+</div>
+
+
+<!-- CAR LIST -->
+<div class="car-container">
+
+    <a href="car-details.html?car=swift" class="car-card"
+    data-brand="maruti" data-fuel="petrol" data-type="hatchback">
+    <img src="Img/swift.jpeg">
+    <div class="car-info">
+    <h3>Maruti Suzuki Swift</h3>
+    <p class="price">₹6 Lakh</p>
+    <p>Engine: 1.2L | Mileage: 22 km/l</p>
+    </div></a>
+
+    <a href="car-details.html?car=nexon" class="car-card"
+    data-brand="tata" data-fuel="petrol" data-type="suv">
+    <img src="Img/nexon.jpeg">
+    <div class="car-info">
+    <h3>Tata Nexon</h3>
+    <p class="price">₹9 Lakh</p>
+    <p>Engine: 1.2L | Mileage: 17 km/l</p>
+    </div></a>
+
+    <a href="car-details.html?car=verna" class="car-card"
+    data-brand="hyundai" data-fuel="petrol" data-type="sedan">
+    <img src="Img/verna.jpeg">
+    <div class="car-info">
+    <h3>Hyundai Verna</h3>
+    <p class="price">₹11 Lakh</p>
+    <p>Engine: 1.5L | Mileage: 19 km/l</p>
+    </div></a>
+
+    <a href="car-details.html?car=baleno" class="car-card"
+    data-brand="maruti" data-fuel="petrol" data-type="hatchback">
+    <img src="Img/baleno.png">
+    <div class="car-info">
+    <h3>Maruti Suzuki Baleno</h3>
+    <p class="price">₹7 Lakh</p>
+    <p>Engine: 1.2L | Mileage: 23 km/l</p>
+    </div></a>
+
+    <a href="car-details.html?car=tiago" class="car-card"
+    data-brand="tata" data-fuel="petrol" data-type="hatchback">
+    <img src="Img/taigo2.jpeg">
+    <div class="car-info">
+    <h3>Tata Tiago</h3>
+    <p class="price">₹5.5 Lakh</p>
+    <p>Engine: 1.2L | Mileage: 20 km/l</p>
+    </div></a>
+
+    <a href="car-details.html?car=xuv300" class="car-card"
+    data-brand="mahindra" data-fuel="diesel" data-type="suv">
+    <img src="Img/XUV300.jpeg">
+    <div class="car-info">
+    <h3>Mahindra XUV300</h3>
+    <p class="price">₹10 Lakh</p>
+    <p>Engine: 1.2L | Mileage: 18 km/l</p>
+    </div></a>
+
+    <a href="car-details.html?car=i20" class="car-card"
+    data-brand="hyundai" data-fuel="petrol" data-type="hatchback">
+    <img src="Img/i20_r.png">
+    <div class="car-info">
+    <h3>Hyundai i20</h3>
+    <p class="price">₹7.5 Lakh</p>
+    <p>Engine: 1.2L | Mileage: 21 km/l</p>
+    </div></a>
+
+    <a href="car-details.html?car=city" class="car-card"
+    data-brand="honda" data-fuel="petrol" data-type="sedan">
+    <img src="Img/city.jpeg">
+    <div class="car-info">
+    <h3>Honda City</h3>
+    <p class="price">₹12 Lakh</p>
+    <p>Engine: 1.5L | Mileage: 18 km/l</p>
+    </div></a>
+
+    <a href="car-details.html?car=thar" class="car-card"
+    data-brand="mahindra" data-fuel="diesel" data-type="suv">
+    <img src="Img/thar_r.png">
+    <div class="car-info">
+    <h3>Mahindra Thar</h3>
+    <p class="price">₹14 Lakh</p>
+    <p>Engine: 2.0L | Mileage: 15 km/l</p>
+    </div></a>
+
+    <a href="car-details.html?car=nexon-ev" class="car-card"
+    data-brand="tata" data-fuel="electric" data-type="suv">
+    <img src="Img/ev.jpeg">
+    <div class="car-info">
+    <h3>Tata Nexon EV</h3>
+    <p class="price">₹15 Lakh</p>
+    <p>Range: 325 km</p>
+    </div></a>
+
+    <a href="car-details.html?car=alto-k10" class="car-card"
+    data-brand="maruti" data-fuel="petrol" data-type="hatchback">
+    <img src="Img/k10.jpeg">
+    <div class="car-info">
+    <h3>Maruti Alto K10</h3>
+    <p class="price">₹4 Lakh</p>
+    <p>Engine: 1.0L | Mileage: 24 km/l</p>
+    </div></a>
+
+    <a href="car-details.html?car=wagonr" class="car-card"
+    data-brand="maruti" data-fuel="petrol" data-type="hatchback">
+    <img src="Img/wagonr.jpeg">
+    <div class="car-info">
+    <h3>Maruti WagonR</h3>
+    <p class="price">₹5.5 Lakh</p>
+    <p>Engine: 1.2L | Mileage: 23 km/l</p>
+    </div></a>
+
+    <a href="car-details.html?car=seltos" class="car-card"
+    data-brand="kia" data-fuel="petrol" data-type="suv">
+    <img src="Img/kia_seltos.jpg">
+    <div class="car-info">
+    <h3>Kia Seltos</h3>
+    <p class="price">₹13.5 Lakh</p>
+    <p>Engine: 1.5L | Mileage: 16 km/l</p>
+    </div></a>
+
+    <a href="car-details.html?car=creta" class="car-card"
+    data-brand="hyundai" data-fuel="petrol" data-type="suv">
+    <img src="Img/Hyundai_Creta_re_r.png">
+    <div class="car-info">
+    <h3>Hyundai Creta</h3>
+    <p class="price">₹13 Lakh</p>
+    <p>Engine: 1.5L | Mileage: 16 km/l</p>
+    </div></a>
+
+    <a href="car-details.html?car=fortuner" class="car-card"
+    data-brand="toyota" data-fuel="diesel" data-type="suv">
+    <img src="Img/Toyota_Fortuner_r.png">
+    <div class="car-info">
+    <h3>Toyota Fortuner</h3>
+    <p class="price">₹41 Lakh</p>
+    <p>Engine: 2.7L | Mileage: 11 km/l</p>
+    </div></a>
+
+    <a href="car-details.html?car=scorpio" class="car-card"
+    data-brand="mahindra" data-fuel="diesel" data-type="suv">
+    <img src="Img/Mahindra_Scorpio.jpg">
+    <div class="car-info">
+    <h3>Mahindra Scorpio</h3>
+    <p class="price">₹15.5 Lakh</p>
+    <p>Engine: 2.2L | Mileage: 14 km/l</p>
+    </div></a>
+
+    <a href="car-details.html?car=compass" class="car-card"
+    data-brand="jeep" data-fuel="diesel" data-type="suv">
+    <img src="Img/Jeep_Compass.jpg">
+    <div class="car-info">
+    <h3>Jeep Compass</h3>
+    <p class="price">₹23 Lakh</p>
+    <p>Engine: 2.0L | Mileage: 15 km/l</p>
+    </div></a>
+
+    <a href="car-details.html?car=tiagoEv" class="car-card"
+    data-brand="tata" data-fuel="electric" data-type="hatchback">
+    <img src="Img/tiago_ev.jpg">
+    <div class="car-info">
+    <h3>Tata Tiago EV</h3>
+    <p class="price">₹8.5 Lakh</p>
+    <p>Range: 250 km</p>
+    </div></a>
+
+    <a href="car-details.html?car=harrier" class="car-card"
+    data-brand="tata" data-fuel="diesel" data-type="suv">
+    <img src="Img/Tata_Harrier.jpg">
+    <div class="car-info">
+    <h3>Tata Harrier</h3>
+    <p class="price">₹19.5 Lakh</p>
+    <p>Engine: 2.0L | Mileage: 15 km/l</p>
+    </div></a>
+
+    <a href="car-details.html?car=ciaz" class="car-card"
+    data-brand="maruti" data-fuel="petrol" data-type="sedan">
+    <img src="Img/Maruti_Ciaz_r.png">
+    <div class="car-info">
+    <h3>Maruti Ciaz</h3>
+    <p class="price">₹11.5 Lakh</p>
+    <p>Engine: 1.5L | Mileage: 20 km/l</p>
+    </div></a>
+
+    <a href="car-details.html?car=altroz" class="car-card"
+    data-brand="tata" data-fuel="petrol" data-type="hatchback">
+    <img src="Img/Tata_Altroz_r.png">
+    <div class="car-info">
+    <h3>Tata Altroz</h3>
+    <p class="price">₹7.5 Lakh</p>
+    <p>Engine: 1.2L | Mileage: 19 km/l</p>
+    </div></a>
+
+    <a href="car-details.html?car=glanza" class="car-card"
+    data-brand="toyota" data-fuel="petrol" data-type="hatchback">
+    <img src="Img/Toyota_Glanza.jpg">
+    <div class="car-info">
+    <h3>Toyota Glanza</h3>
+    <p class="price">₹7 Lakh</p>
+    <p>Engine: 1.2L | Mileage: 21 km/l</p>
+    </div></a>
+
+    <a href="car-details.html?car=xuv700" class="car-card"
+    data-brand="mahindra" data-fuel="diesel" data-type="suv">
+    <img src="Img/Mahindra_XUV700.jpg">
+    <div class="car-info">
+    <h3>Mahindra XUV700</h3>
+    <p class="price">₹16 Lakh</p>
+    <p>Engine: 2.0L | Mileage: 14 km/l</p>
+    </div></a>
+
+    <a href="car-details.html?car=amaze" class="car-card"
+    data-brand="honda" data-fuel="petrol" data-type="sedan">
+    <img src="Img/Honda_Amaze.jpg">
+    <div class="car-info">
+    <h3>Honda Amaze</h3>
+    <p class="price">₹7.5 Lakh</p>
+    <p>Engine: 1.2L | Mileage: 18 km/l</p>
+    </div></a>
+
+    <a href="car-details.html?car=kwid" class="car-card"
+    data-brand="renault" data-fuel="petrol" data-type="hatchback">
+    <img src="Img/Renault_Kwid_r.png">
+    <div class="car-info">
+    <h3>Renault Kwid</h3>
+    <p class="price">₹5 Lakh</p>
+    <p>Engine: 1.0L | Mileage: 22 km/l</p>
+    </div></a>
+
+    <a href="car-details.html?car=punchEv" class="car-card"
+    data-brand="tata" data-fuel="electric" data-type="suv">
+    <img src="Img/punch_ev.jpg">
+    <div class="car-info">
+    <h3>Tata Punch EV</h3>
+    <p class="price">₹10.5 Lakh</p>
+    <p>Range: 315 km</p>
+    </div></a>
+
+    <a href="car-details.html?car=meridian" class="car-card"
+    data-brand="jeep" data-fuel="diesel" data-type="suv">
+    <img src="Img/Jeep_Meridian.jpg">
+    <div class="car-info">
+    <h3>Jeep Meridian</h3>
+    <p class="price">₹25 Lakh</p>
+    <p>Engine: 2.0L | Mileage: 13 km/l</p>
+    </div></a>
+
+    <a href="car-details.html?car=ertiga" class="car-card"
+    data-brand="maruti" data-fuel="petrol" data-type="mpv">
+    <img src="Img/Maruti_Ertiga_r.png">
+    <div class="car-info">
+    <h3>Maruti Ertiga</h3>
+    <p class="price">₹9.5 Lakh</p>
+    <p>Engine: 1.5L | Mileage: 19 km/l</p>
+    </div></a>
+
+    <a href="car-details.html?car=alcazar" class="car-card"
+    data-brand="hyundai" data-fuel="diesel" data-type="suv">
+    <img src="Img/Hyundai_Alcazar.jpg">
+    <div class="car-info">
+    <h3>Hyundai Alcazar</h3>
+    <p class="price">₹17.5 Lakh</p>
+    <p>Engine: 2.0L | Mileage: 16 km/l</p>
+    </div></a>
+
+    <a href="car-details.html?car=tigor" class="car-card"
+    data-brand="tata" data-fuel="petrol" data-type="sedan">
+    <img src="Img/Tata_Tigor.jpg">
+    <div class="car-info">
+    <h3>Tata Tigor</h3>
+    <p class="price">₹7 Lakh</p>
+    <p>Engine: 1.2L | Mileage: 19 km/l</p>
+    </div></a>
+
+    <a href="car-details.html?car=sonet" class="car-card"
+    data-brand="kia" data-fuel="petrol" data-type="suv">
+    <img src="Img/Kia_Sonet.jpg">
+    <div class="car-info">
+    <h3>Kia Sonet</h3>
+    <p class="price">₹9.5 Lakh</p>
+    <p>Engine: 1.5L | Mileage: 17 km/l</p>
+    </div></a>
+
+    <a href="car-details.html?car=triber" class="car-card"
+    data-brand="renault" data-fuel="petrol" data-type="mpv">
+    <img src="Img/Renault_Triber.jpg">
+    <div class="car-info">
+    <h3>Renault Triber</h3>
+    <p class="price">₹6.5 Lakh</p>
+    <p>Engine: 1.0L | Mileage: 20 km/l</p>
+    </div></a>
+
+    <a href="car-details.html?car=xuv400Ev" class="car-card"
+    data-brand="mahindra" data-fuel="electric" data-type="suv">
+    <img src="Img/xuv400_ev.jpg">
+    <div class="car-info">
+    <h3>Mahindra XUV400 EV</h3>
+    <p class="price">₹16 Lakh</p>
+    <p>Range: 456 km</p>
+    </div></a>
+
+    <a href="car-details.html?car=innova" class="car-card"
+    data-brand="toyota" data-fuel="diesel" data-type="mpv">
+    <img src="Img/Toyota_Innova_Crysta.jpg">
+    <div class="car-info">
+    <h3>Toyota Innova Crysta</h3>
+    <p class="price">₹18 Lakh</p>
+    <p>Engine: 2.4L | Mileage: 14 km/l</p>
+    </div></a>
+
+    <a href="car-details.html?car=ignis" class="car-card"
+    data-brand="maruti" data-fuel="petrol" data-type="hatchback">
+    <img src="Img/ignis.jpg">
+    <div class="car-info">
+    <h3>Maruti Ignis</h3>
+    <p class="price">₹5.5 Lakh</p>
+    <p>Engine: 1.2L | Mileage: 20 km/l</p>
+    </div></a>
+
+    <a href="car-details.html?car=safari" class="car-card"
+    data-brand="tata" data-fuel="diesel" data-type="suv">
+    <img src="Img/Tata_Safari_r.png">
+    <div class="car-info">
+    <h3>Tata Safari</h3>
+    <p class="price">₹21 Lakh</p>
+    <p>Engine: 2.0L | Mileage: 15 km/l</p>
+    </div></a>
+
+</div>
+
+<p id="noResults" style="display:none; color:white; text-align:center;">
+🚫 No Car Available
+</p>
+
+<script>
+
+const searchInput = document.querySelector(".search-box input");
+const cards = document.querySelectorAll(".car-card");
+const selects = document.querySelectorAll(".filters select");
+const noResults = document.getElementById("noResults");
+
+function filterCars() {
+    const search = searchInput.value.toLowerCase().trim();
+    const category = selects[0].value;
+    const brand = selects[1].value;
+    const fuel = selects[2].value;
+
+    let visibleCount = 0;
+
+    cards.forEach(card => {
+        const name = card.querySelector("h3").innerText.toLowerCase();
+        const dataText = `${name} ${card.dataset.brand} ${card.dataset.fuel} ${card.dataset.type}`;
+
+        const match =
+            (!search || dataText.includes(search)) &&
+            (!category || card.dataset.type === category) &&
+            (!brand || card.dataset.brand === brand) &&
+            (!fuel || card.dataset.fuel === fuel);
+
+        card.style.display = match ? "" : "none";
+
+        if (match) visibleCount++;
+    });
+
+    noResults.style.display = visibleCount ? "none" : "block";
+}
+
+function resetFilters() {
+    searchInput.value = "";
+    selects.forEach(select => (select.value = ""));
+    filterCars();
+}
+
+/* EVENTS */
+searchInput.addEventListener("input", filterCars);
+selects.forEach(select => select.addEventListener("change", filterCars));
+document.getElementById("resetBtn").addEventListener("click", resetFilters);
+
+</script>
+
+
+    <!-- FOOTER -->
+    <footer>
+        © 2026 Spec Reign | All Rights Reserved
+    </footer>
+
+</body>
+</html>
