@@ -33,6 +33,17 @@ This project is developed as an academic minor project using HTML, CSS, and Java
 
 ---
 
+## 📁 Project Structure
+
+```
+CAR WEB/
+├── index.html            # landing page 
+├── 2.html                # car grid page
+├── car-details.html      # car details page
+├── Img/                  # contains list of car images 
+├── Img2/                 # contains list of more car images
+```
+
 ## 💻 Installation and Setup
 
 Follow these steps to run the project locally:
